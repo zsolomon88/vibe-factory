@@ -1,0 +1,201 @@
+:root {
+    --bg: #0b0e13;
+    --panel: #121722;
+    --text: #e7eef7;
+    --muted: #8aa0b8;
+    --accent: #00e0b8;
+    --accent-2: #29a3ff;
+}
+
+* { box-sizing: border-box; }
+html, body {
+    height: 100%;
+}
+body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    color: var(--text);
+    background: radial-gradient(1200px 1200px at 80% -10%, #10233a 0%, var(--bg) 50%);
+}
+
+.app {
+    min-height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+.header {
+    padding: 16px 24px;
+}
+.title {
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.main {
+    display: grid;
+    place-items: center;
+    padding: 12px 16px 72px;
+}
+
+.stage-wrapper {
+    position: relative;
+    width: 720px;
+    height: 720px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+    overflow: hidden;
+}
+
+canvas#gameCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: linear-gradient(180deg, #0f1a28 0%, #0b111a 100%);
+    outline: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Goal flash overlay */
+.goal-flash {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(600px 600px at center, rgba(41,163,255,0.25), rgba(0,224,184,0.0));
+    opacity: 0;
+    transition: opacity 250ms ease;
+}
+
+/* Shake animation applied to stage-wrapper */
+@keyframes screen-shake {
+    0% { transform: translate(0, 0); }
+    20% { transform: translate(-6px, 3px); }
+    40% { transform: translate(5px, -4px); }
+    60% { transform: translate(-3px, 4px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0, 0); }
+}
+.shake { animation: screen-shake 320ms ease-in-out; }
+
+.countdown-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+}
+.countdown-text {
+    font-size: 72px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #e7eef7;
+    text-shadow: 0 6px 32px rgba(0, 224, 184, 0.25);
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 200ms ease, transform 200ms ease;
+}
+.countdown-text.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.menu-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, rgba(11,14,19,0.75), rgba(11,14,19,0.85));
+}
+
+.menu-card {
+    width: 86%;
+    max-width: 440px;
+    background: var(--panel);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+}
+
+.menu-card h2 {
+    margin: 0 0 6px 0;
+}
+
+.menu-sub {
+    margin: 0 0 18px 0;
+    color: var(--muted);
+}
+
+.menu-label {
+    display: block;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.menu-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: #0e1420;
+    color: var(--text);
+}
+.menu-input::placeholder { color: #6b7b90; }
+
+.menu-button {
+    margin-top: 14px;
+    width: 100%;
+    padding: 12px 16px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: #03121a;
+    border: none;
+    border-radius: 10px;
+    font-weight: 800;
+    letter-spacing: .3px;
+    cursor: pointer;
+}
+.menu-button:active {
+    transform: translateY(1px);
+}
+
+.menu-help {
+    margin-top: 14px;
+    font-size: 14px;
+    color: var(--muted);
+}
+.menu-help ul {
+    margin: 6px 0 0 18px;
+}
+
+.scoreboard {
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    background: rgba(6,10,16,0.75);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    backdrop-filter: blur(8px);
+}
+.scoreboard-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.scores {
+    display: inline-flex;
+    gap: 10px;
+    font-weight: 700;
+}
+.sep { color: #4d5e73; }
+
+@media (max-width: 760px) {
+    .stage-wrapper {
+        width: 92vw;
+        height: 92vw;
+    }
+}
+
+
