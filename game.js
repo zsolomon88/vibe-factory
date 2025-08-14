@@ -252,6 +252,12 @@
     if (aiDecision === -1) vy -= PADDLE_SPEED; // Move up
     if (aiDecision === 1) vy += PADDLE_SPEED;   // Move down
     ai.y = clamp(ai.y + vy, 0, FIELD_SIZE - PADDLE_HEIGHT);
+    
+    // Reset decision after each frame (like player releasing keys)
+    // AI must make a new decision each time, just like player must hold keys
+    if (aiReactionDelay > 0) {
+      aiDecision = 0; // Stop moving until next decision
+    }
   }
 
   function updatePlayer() {
