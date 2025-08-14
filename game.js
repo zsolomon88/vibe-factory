@@ -25,7 +25,7 @@
   let difficulty = "normal"; // 'easy', 'normal', 'hard'
 
   const player = { x: PLAYER_X, y: (FIELD_SIZE - PADDLE_HEIGHT) / 2, vy: 0 };
-  const ai = { x: AI_X, y: (FIELD_SIZE - PADDLE_HEIGHT) / 2, vy: 0 };
+  const ai = { x: AI_X, y: (FIELD_SIZE - PADDLE_HEIGHT) / 2, vy: 0, lastDirection: 0, directionFrames: 0 };
   const ball = {
     x: FIELD_SIZE / 2,
     y: FIELD_SIZE / 2,
@@ -123,6 +123,9 @@
   function centerPaddles() {
     player.y = (FIELD_SIZE - PADDLE_HEIGHT) / 2;
     ai.y = (FIELD_SIZE - PADDLE_HEIGHT) / 2;
+    // Reset AI movement state
+    ai.lastDirection = 0;
+    ai.directionFrames = 0;
   }
 
   function startGame() {
@@ -182,7 +185,7 @@
     });
   }
 
-  // AI logic: moves at constant rate like player, behavior changes based on difficulty
+  // AI logic: moves at constant rate like player with smooth direction changes
   function updateAI() {
     let targetY = ball.y + BALL_SIZE / 2 - PADDLE_HEIGHT / 2;
     let aiCenterY = ai.y + PADDLE_HEIGHT / 2;
@@ -190,18 +193,20 @@
     if (difficulty === "easy") {
       // Easy mode: AI makes mistakes and reacts slower
       
-      // Add random mistake chance (10% of the time)
-      if (Math.random() < 0.1) {
+      // Add random mistake chance (8% of the time)
+      if (Math.random() < 0.08) {
         // Move in wrong direction occasionally
         targetY = ai.y + (Math.random() - 0.5) * PADDLE_HEIGHT;
-      } else if (Math.random() < 0.15) {
+      } else if (Math.random() < 0.12) {
         // Add noise to target position (overshoot/undershoot)
-        targetY += (Math.random() - 0.5) * PADDLE_HEIGHT * 0.8;
+        targetY += (Math.random() - 0.5) * PADDLE_HEIGHT * 0.6;
       }
       
-      // Easy mode: slower reaction - only respond 70% of the time
-      if (Math.random() < 0.3) {
-        return; // Don't move this frame (slower reaction)
+      // Easy mode: slower reaction - only respond 75% of the time
+      if (Math.random() < 0.25) {
+        // Continue in same direction as last frame to reduce jerkiness
+        ai.y = clamp(ai.y + ai.lastDirection * PADDLE_SPEED, 0, FIELD_SIZE - PADDLE_HEIGHT);
+        return;
       }
       
     } else if (difficulty === "hard") {
@@ -223,18 +228,43 @@
       }
     }
     
-    // AI moves at constant rate like player
+    // Calculate desired direction
     const delta = targetY - aiCenterY;
-    const threshold = PADDLE_SPEED * 0.5; // Dead zone to prevent jittering
+    const threshold = PADDLE_SPEED * 1.5; // Larger dead zone for smoother movement
     
-    let vy = 0;
+    let desiredDirection = 0;
     if (delta > threshold) {
-      vy = PADDLE_SPEED; // Move down
+      desiredDirection = 1; // Want to move down
     } else if (delta < -threshold) {
-      vy = -PADDLE_SPEED; // Move up
+      desiredDirection = -1; // Want to move up
     }
-    // Otherwise stay still (vy = 0)
     
+    // Smooth direction changes to reduce jerkiness
+    if (desiredDirection === ai.lastDirection) {
+      // Continue in same direction
+      ai.directionFrames++;
+    } else if (desiredDirection === 0) {
+      // Gradually slow down before stopping
+      if (ai.directionFrames > 3) {
+        ai.lastDirection = 0;
+        ai.directionFrames = 0;
+      } else {
+        desiredDirection = ai.lastDirection; // Keep moving briefly
+        ai.directionFrames++;
+      }
+    } else {
+      // Changing direction - require a few frames of consistent desire
+      if (ai.directionFrames > 2 || Math.abs(delta) > threshold * 2) {
+        ai.lastDirection = desiredDirection;
+        ai.directionFrames = 0;
+      } else {
+        desiredDirection = ai.lastDirection; // Don't change yet
+        ai.directionFrames++;
+      }
+    }
+    
+    // Move at constant speed
+    const vy = desiredDirection * PADDLE_SPEED;
     ai.y = clamp(ai.y + vy, 0, FIELD_SIZE - PADDLE_HEIGHT);
   }
 
