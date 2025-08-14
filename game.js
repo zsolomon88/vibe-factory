@@ -182,17 +182,17 @@
   let aiDecision = 0; // -1 = move up, 0 = stay still, 1 = move down
   
   function updateAI() {
-    // Human-like reaction delay (3-8 frames depending on ball speed)
+    // Human-like reaction delay (2-4 frames for smoother movement)
     const ballSpeed = Math.hypot(ball.vx, ball.vy);
-    const baseDelay = 3 + Math.random() * 5;
-    const speedPenalty = Math.min(ballSpeed / 8, 3); // More delay for faster balls
+    const baseDelay = 2 + Math.random() * 2;
+    const speedPenalty = Math.min(ballSpeed / 12, 2); // Less delay for smoother movement
     const reactionFrames = Math.floor(baseDelay + speedPenalty);
     
     aiReactionDelay--;
     
-    // Only update decision when reaction delay expires or ball direction changes significantly
+    // Update decision more frequently for smoother movement
     const ballYChange = Math.abs(ball.y - aiLastBallY);
-    if (aiReactionDelay <= 0 || ballYChange > 20) {
+    if (aiReactionDelay <= 0 || ballYChange > 15) {
       aiReactionDelay = reactionFrames;
       aiLastBallY = ball.y;
       
@@ -205,20 +205,19 @@
         predictedY = ball.y + ball.vy * timeToReach;
         
         // Add prediction errors based on ball speed and randomness
-        const predictionError = (Math.random() - 0.5) * (30 + ballSpeed * 5);
+        const predictionError = (Math.random() - 0.5) * (20 + ballSpeed * 3);
         predictedY += predictionError;
       }
       
       aiTarget = predictedY + BALL_SIZE / 2 - PADDLE_HEIGHT / 2;
       
       // Make movement decision based on target position
-      const delta = aiTarget - ai.y;
       const paddleCenter = ai.y + PADDLE_HEIGHT / 2;
       const targetCenter = aiTarget + PADDLE_HEIGHT / 2;
       const centerDelta = targetCenter - paddleCenter;
       
-      // Add some decision threshold to avoid constant micro-movements
-      const moveThreshold = PADDLE_SPEED * 0.8;
+      // Smaller threshold for more responsive movement
+      const moveThreshold = PADDLE_SPEED * 0.5;
       
       if (Math.abs(centerDelta) < moveThreshold) {
         aiDecision = 0; // Stay still if close enough
@@ -229,20 +228,20 @@
       }
       
       // Sometimes make wrong decisions or hesitate (human-like mistakes)
-      const confidence = Math.max(0.3, 1.0 - (ballSpeed / 15));
+      const confidence = Math.max(0.4, 1.0 - (ballSpeed / 18));
       
       // Occasionally make wrong decision when confidence is low
-      if (confidence < 0.6 && Math.random() < 0.15) {
+      if (confidence < 0.7 && Math.random() < 0.1) {
         aiDecision *= -1; // Move in wrong direction
       }
       
       // Sometimes hesitate and do nothing instead of moving
-      if (confidence < 0.5 && Math.random() < 0.2) {
+      if (confidence < 0.6 && Math.random() < 0.15) {
         aiDecision = 0; // Freeze up
       }
       
       // Very rare "brain farts" - random wrong movements
-      if (Math.random() < 0.01) {
+      if (Math.random() < 0.005) {
         aiDecision = Math.random() < 0.5 ? -1 : 1; // Random direction
       }
     }
@@ -252,12 +251,6 @@
     if (aiDecision === -1) vy -= PADDLE_SPEED; // Move up
     if (aiDecision === 1) vy += PADDLE_SPEED;   // Move down
     ai.y = clamp(ai.y + vy, 0, FIELD_SIZE - PADDLE_HEIGHT);
-    
-    // Reset decision after each frame (like player releasing keys)
-    // AI must make a new decision each time, just like player must hold keys
-    if (aiReactionDelay > 0) {
-      aiDecision = 0; // Stop moving until next decision
-    }
   }
 
   function updatePlayer() {
