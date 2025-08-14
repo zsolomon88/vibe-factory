@@ -180,6 +180,8 @@
   let aiTarget = 0;
   let aiLastBallY = 0;
   let aiDecision = 0; // -1 = move up, 0 = stay still, 1 = move down
+  let aiCommitmentFrames = 0; // Frames to commit to current direction
+  let aiLastDecision = 0; // Track previous decision to prevent rapid switching
   
   function updateAI() {
     // Human-like reaction delay (2-4 frames for smoother movement)
@@ -189,10 +191,14 @@
     const reactionFrames = Math.floor(baseDelay + speedPenalty);
     
     aiReactionDelay--;
+    aiCommitmentFrames--; // Count down commitment frames
     
-    // Update decision more frequently for smoother movement
+    // Only make new decisions when not committed to current direction
     const ballYChange = Math.abs(ball.y - aiLastBallY);
-    if (aiReactionDelay <= 0 || ballYChange > 15) {
+    const canMakeNewDecision = aiReactionDelay <= 0 && aiCommitmentFrames <= 0;
+    const significantBallChange = ballYChange > 20; // Increased threshold for direction changes
+    
+    if (canMakeNewDecision || significantBallChange) {
       aiReactionDelay = reactionFrames;
       aiLastBallY = ball.y;
       
@@ -216,15 +222,35 @@
       const targetCenter = aiTarget + PADDLE_HEIGHT / 2;
       const centerDelta = targetCenter - paddleCenter;
       
-      // Smaller threshold for more responsive movement
-      const moveThreshold = PADDLE_SPEED * 0.5;
+      // Movement threshold for decision making
+      const moveThreshold = PADDLE_SPEED * 0.8;
       
+      let newDecision = 0;
       if (Math.abs(centerDelta) < moveThreshold) {
-        aiDecision = 0; // Stay still if close enough
+        newDecision = 0; // Stay still if close enough
       } else if (centerDelta > 0) {
-        aiDecision = 1; // Move down
+        newDecision = 1; // Move down
       } else {
-        aiDecision = -1; // Move up
+        newDecision = -1; // Move up
+      }
+      
+      // Prevent rapid direction switching - only change if it's a significant change
+      const isDirectionChange = (aiLastDecision !== 0 && newDecision !== 0 && aiLastDecision !== newDecision);
+      const isStoppingMovement = (aiLastDecision !== 0 && newDecision === 0);
+      
+      if (isDirectionChange && !significantBallChange) {
+        // Don't change direction unless ball movement is significant
+        // Stick with current decision for stability
+        newDecision = aiLastDecision;
+      } else {
+        // Accept the new decision and commit to it
+        aiDecision = newDecision;
+        aiLastDecision = newDecision;
+        
+        // Commit to this direction for a few frames to prevent jittering
+        if (newDecision !== 0) {
+          aiCommitmentFrames = 4 + Math.floor(Math.random() * 3); // 4-6 frames commitment
+        }
       }
       
       // Sometimes make wrong decisions or hesitate (human-like mistakes)
@@ -233,16 +259,20 @@
       // Occasionally make wrong decision when confidence is low
       if (confidence < 0.7 && Math.random() < 0.1) {
         aiDecision *= -1; // Move in wrong direction
+        aiLastDecision = aiDecision;
       }
       
       // Sometimes hesitate and do nothing instead of moving
       if (confidence < 0.6 && Math.random() < 0.15) {
         aiDecision = 0; // Freeze up
+        aiLastDecision = 0;
+        aiCommitmentFrames = 0; // No commitment when hesitating
       }
       
       // Very rare "brain farts" - random wrong movements
       if (Math.random() < 0.005) {
         aiDecision = Math.random() < 0.5 ? -1 : 1; // Random direction
+        aiLastDecision = aiDecision;
       }
     }
     
