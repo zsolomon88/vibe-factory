@@ -178,40 +178,37 @@
   // AI logic: simplified fixed-speed movement like player, with human-like decision making
   let aiReactionDelay = 0;
   let aiTarget = 0;
-  let aiLastBallY = 0;
   let aiDecision = 0; // -1 = move up, 0 = stay still, 1 = move down
-  let aiCommitmentFrames = 0; // Frames to commit to current direction
-  let aiLastDecision = 0; // Track previous decision to prevent rapid switching
+  let aiLastHitBy = null; // Track when ball changes hands to trigger new decisions
   
   function updateAI() {
-    // Human-like reaction delay (2-4 frames for smoother movement)
-    const ballSpeed = Math.hypot(ball.vx, ball.vy);
-    const baseDelay = 2 + Math.random() * 2;
-    const speedPenalty = Math.min(ballSpeed / 12, 2); // Less delay for smoother movement
-    const reactionFrames = Math.floor(baseDelay + speedPenalty);
+    // Check if player just hit the ball (triggers new AI decision)
+    const playerJustHit = (lastHitBy === "player" && aiLastHitBy !== "player");
     
+    // Update our tracking of who hit the ball
+    aiLastHitBy = lastHitBy;
+    
+    // Make new decision when player hits ball or after reaction delay
     aiReactionDelay--;
-    aiCommitmentFrames--; // Count down commitment frames
+    const shouldMakeDecision = playerJustHit || aiReactionDelay <= 0;
     
-    // Only make new decisions when not committed to current direction
-    const ballYChange = Math.abs(ball.y - aiLastBallY);
-    const canMakeNewDecision = aiReactionDelay <= 0 && aiCommitmentFrames <= 0;
-    const significantBallChange = ballYChange > 20; // Increased threshold for direction changes
-    
-    if (canMakeNewDecision || significantBallChange) {
-      aiReactionDelay = reactionFrames;
-      aiLastBallY = ball.y;
+    if (shouldMakeDecision) {
+      // Reset reaction delay
+      const ballSpeed = Math.hypot(ball.vx, ball.vy);
+      const baseDelay = 8 + Math.random() * 6; // Longer delay between decisions for more natural movement
+      const speedPenalty = Math.min(ballSpeed / 10, 4);
+      aiReactionDelay = Math.floor(baseDelay + speedPenalty);
       
-      // Predict where ball will be (with errors)
+      // Predict where ball will be when it reaches AI paddle
       let predictedY = ball.y;
       
-      // Simple prediction based on ball velocity (with human-like errors)
-      if (Math.abs(ball.vx) > 0.1) {
+      // Only predict if ball is moving toward AI
+      if (ball.vx > 0 && Math.abs(ball.vx) > 0.1) {
         const timeToReach = Math.abs((ai.x - ball.x) / ball.vx);
         predictedY = ball.y + ball.vy * timeToReach;
         
-        // Add prediction errors based on ball speed and randomness
-        const predictionError = (Math.random() - 0.5) * (20 + ballSpeed * 3);
+        // Add prediction errors based on ball speed and human-like mistakes
+        const predictionError = (Math.random() - 0.5) * (25 + ballSpeed * 4);
         predictedY += predictionError;
       }
       
@@ -222,61 +219,37 @@
       const targetCenter = aiTarget + PADDLE_HEIGHT / 2;
       const centerDelta = targetCenter - paddleCenter;
       
-      // Movement threshold for decision making
-      const moveThreshold = PADDLE_SPEED * 0.8;
+      // Decision threshold
+      const moveThreshold = PADDLE_SPEED * 1.5; // Larger threshold for less twitchy movement
       
-      let newDecision = 0;
       if (Math.abs(centerDelta) < moveThreshold) {
-        newDecision = 0; // Stay still if close enough
+        aiDecision = 0; // Stay still if close enough
       } else if (centerDelta > 0) {
-        newDecision = 1; // Move down
+        aiDecision = 1; // Move down
       } else {
-        newDecision = -1; // Move up
+        aiDecision = -1; // Move up
       }
       
-      // Prevent rapid direction switching - only change if it's a significant change
-      const isDirectionChange = (aiLastDecision !== 0 && newDecision !== 0 && aiLastDecision !== newDecision);
-      const isStoppingMovement = (aiLastDecision !== 0 && newDecision === 0);
-      
-      if (isDirectionChange && !significantBallChange) {
-        // Don't change direction unless ball movement is significant
-        // Stick with current decision for stability
-        newDecision = aiLastDecision;
-      } else {
-        // Accept the new decision and commit to it
-        aiDecision = newDecision;
-        aiLastDecision = newDecision;
-        
-        // Commit to this direction for a few frames to prevent jittering
-        if (newDecision !== 0) {
-          aiCommitmentFrames = 4 + Math.floor(Math.random() * 3); // 4-6 frames commitment
-        }
-      }
-      
-      // Sometimes make wrong decisions or hesitate (human-like mistakes)
-      const confidence = Math.max(0.4, 1.0 - (ballSpeed / 18));
+      // Human-like mistakes based on ball speed and game situation
+      const confidence = Math.max(0.3, 1.0 - (ballSpeed / 20));
       
       // Occasionally make wrong decision when confidence is low
-      if (confidence < 0.7 && Math.random() < 0.1) {
+      if (confidence < 0.6 && Math.random() < 0.12) {
         aiDecision *= -1; // Move in wrong direction
-        aiLastDecision = aiDecision;
       }
       
       // Sometimes hesitate and do nothing instead of moving
-      if (confidence < 0.6 && Math.random() < 0.15) {
+      if (confidence < 0.5 && Math.random() < 0.18) {
         aiDecision = 0; // Freeze up
-        aiLastDecision = 0;
-        aiCommitmentFrames = 0; // No commitment when hesitating
       }
       
-      // Very rare "brain farts" - random wrong movements
-      if (Math.random() < 0.005) {
+      // Very rare random movements
+      if (Math.random() < 0.008) {
         aiDecision = Math.random() < 0.5 ? -1 : 1; // Random direction
-        aiLastDecision = aiDecision;
       }
     }
     
-    // Move at fixed speed based on decision (exactly like player)
+    // Move at fixed speed based on current decision
     let vy = 0;
     if (aiDecision === -1) vy -= PADDLE_SPEED; // Move up
     if (aiDecision === 1) vy += PADDLE_SPEED;   // Move down
