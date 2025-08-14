@@ -245,6 +245,63 @@ canvas#gameCanvas {
     margin: 6px 0 0 18px;
 }
 
+/* Difficulty selection styles */
+.difficulty-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.difficulty-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--input-bg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+[data-theme="light"] .difficulty-option {
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.difficulty-option:hover {
+    border-color: var(--accent);
+    background: rgba(0, 224, 184, 0.05);
+}
+
+.difficulty-option input[type="radio"] {
+    margin: 0;
+    accent-color: var(--accent);
+}
+
+.difficulty-option:has(input:checked) {
+    border-color: var(--accent);
+    background: rgba(0, 224, 184, 0.1);
+}
+
+.difficulty-text {
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+}
+
+.difficulty-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.2;
+    margin-top: 2px;
+}
+
+.difficulty-option div {
+    display: flex;
+    flex-direction: column;
+}
+
 .scoreboard {
     position: sticky;
     bottom: 0;
