@@ -175,12 +175,77 @@
     });
   }
 
-  // AI logic: simple proportional controller toward ball y with reaction delay and max speed
+  // AI logic: humanized with reaction delays, prediction errors, and imperfections
+  let aiReactionDelay = 0;
+  let aiTarget = 0;
+  let aiLastBallY = 0;
+  let aiConfidence = 1.0;
+  let aiOvershootFactor = 0;
+  
   function updateAI() {
-    const targetY = ball.y + BALL_SIZE / 2 - PADDLE_HEIGHT / 2;
-    const delta = targetY - ai.y;
-    const aiMax = PADDLE_SPEED * 0.95;
-    const step = clamp(delta * 0.12, -aiMax, aiMax);
+    // Human-like reaction delay (3-8 frames depending on ball speed)
+    const ballSpeed = Math.hypot(ball.vx, ball.vy);
+    const baseDelay = 3 + Math.random() * 5;
+    const speedPenalty = Math.min(ballSpeed / 8, 3); // More delay for faster balls
+    const reactionFrames = Math.floor(baseDelay + speedPenalty);
+    
+    aiReactionDelay--;
+    
+    // Only update target when reaction delay expires or ball direction changes significantly
+    const ballYChange = Math.abs(ball.y - aiLastBallY);
+    if (aiReactionDelay <= 0 || ballYChange > 20) {
+      aiReactionDelay = reactionFrames;
+      aiLastBallY = ball.y;
+      
+      // Predict where ball will be (with errors)
+      let predictedY = ball.y;
+      
+      // Simple prediction based on ball velocity (with human-like errors)
+      if (Math.abs(ball.vx) > 0.1) {
+        const timeToReach = Math.abs((ai.x - ball.x) / ball.vx);
+        predictedY = ball.y + ball.vy * timeToReach;
+        
+        // Add prediction errors based on ball speed and randomness
+        const predictionError = (Math.random() - 0.5) * (30 + ballSpeed * 5);
+        predictedY += predictionError;
+      }
+      
+      // Confidence decreases with ball speed and distance
+      const distance = Math.abs(ball.x - ai.x);
+      aiConfidence = Math.max(0.3, 1.0 - (ballSpeed / 15) - (distance / 400));
+      
+      // Sometimes overshoot target (human tendency)
+      aiOvershootFactor = (Math.random() - 0.5) * 0.3 * (1 - aiConfidence);
+      
+      aiTarget = predictedY + BALL_SIZE / 2 - PADDLE_HEIGHT / 2;
+    }
+    
+    // Move toward target with human-like imperfections
+    const delta = aiTarget - ai.y;
+    const absDelta = Math.abs(delta);
+    
+    // Add some overshoot when close to target
+    const overshoot = aiOvershootFactor * PADDLE_HEIGHT;
+    const adjustedTarget = aiTarget + overshoot;
+    const adjustedDelta = adjustedTarget - ai.y;
+    
+    // Variable speed based on confidence and urgency
+    const urgency = Math.min(absDelta / 50, 1); // More urgent when far from target
+    const speedMultiplier = 0.7 + (aiConfidence * 0.25) + (urgency * 0.15);
+    const aiMax = PADDLE_SPEED * speedMultiplier;
+    
+    // Sometimes hesitate or move too cautiously when unsure
+    let responsiveness = 0.12;
+    if (aiConfidence < 0.6) {
+      responsiveness *= 0.7; // More sluggish when uncertain
+    }
+    
+    // Occasional "brain farts" - very rare random wrong movements
+    if (Math.random() < 0.002) {
+      responsiveness *= -0.3; // Briefly move wrong direction
+    }
+    
+    const step = clamp(adjustedDelta * responsiveness, -aiMax, aiMax);
     ai.y += step;
     ai.y = clamp(ai.y, 0, FIELD_SIZE - PADDLE_HEIGHT);
   }
