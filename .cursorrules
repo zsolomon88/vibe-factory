@@ -28,9 +28,25 @@ git add .
 git commit -m "<type>(<scope>): <description of changes>"
 ```
 
+## GitHub Integration Rules
+- **MANDATORY**: Use GitHub MCP tools for ALL GitHub interactions instead of GitHub CLI
+- Never use `gh` commands or GitHub CLI for any GitHub operations
+- Always use the available GitHub MCP tools for:
+  - Creating, reading, and managing issues
+  - Creating, reading, and managing pull requests
+  - Repository operations (creating, forking, etc.)
+  - File operations in GitHub repositories
+  - Workflow and action management
+  - Code search and repository search
+  - User and organization operations
+  - Notifications and reviews
+- If a GitHub MCP tool is available for an operation, it MUST be used instead of CLI alternatives
+- GitHub CLI (`gh`) should only be used if absolutely no MCP tool alternative exists
+
 ## AI Assistant Instructions
 You are required to:
 1. Create a new feature branch at the start of any new coding session
 2. Commit changes with appropriate messages at the end of each iteration
 3. Remind users to create pull requests when features are complete
 4. Never perform any Git operations on main or master branches
+5. **ALWAYS use GitHub MCP tools instead of GitHub CLI for any GitHub-related operations**
