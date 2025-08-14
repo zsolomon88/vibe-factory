@@ -502,7 +502,21 @@
     // paddles with contrasting colors
     ctx.fillStyle = isLightTheme ? "#1e293b" : "#e7eef7"; // player: dark in light theme, light in dark theme
     ctx.fillRect(player.x, player.y, PADDLE_WIDTH, PADDLE_HEIGHT);
-    ctx.fillStyle = "#29a3ff"; // AI: blue (same in both themes)
+    
+    // AI paddle color based on difficulty
+    let aiColor;
+    switch (difficulty) {
+      case "easy":
+        aiColor = "#10b981"; // Green for easy
+        break;
+      case "hard":
+        aiColor = "#ef4444"; // Red for hard
+        break;
+      default: // normal
+        aiColor = "#29a3ff"; // Blue for normal
+        break;
+    }
+    ctx.fillStyle = aiColor;
     ctx.fillRect(ai.x, ai.y, PADDLE_WIDTH, PADDLE_HEIGHT);
 
     // trail and ball
