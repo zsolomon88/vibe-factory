@@ -286,6 +286,10 @@ canvas#gameCanvas {
 }
 
 /* Easy difficulty - Green */
+.difficulty-option:has(input[value="easy"]) input[type="radio"] {
+    accent-color: #10b981;
+}
+
 .difficulty-option:has(input[value="easy"]:checked) {
     border-color: #10b981;
     background: rgba(16, 185, 129, 0.15);
@@ -297,6 +301,10 @@ canvas#gameCanvas {
 }
 
 /* Normal difficulty - Blue */
+.difficulty-option:has(input[value="normal"]) input[type="radio"] {
+    accent-color: var(--accent-2);
+}
+
 .difficulty-option:has(input[value="normal"]:checked) {
     border-color: var(--accent-2);
     background: rgba(41, 163, 255, 0.15);
@@ -308,6 +316,10 @@ canvas#gameCanvas {
 }
 
 /* Hard difficulty - Red */
+.difficulty-option:has(input[value="hard"]) input[type="radio"] {
+    accent-color: #ef4444;
+}
+
 .difficulty-option:has(input[value="hard"]:checked) {
     border-color: #ef4444;
     background: rgba(239, 68, 68, 0.15);
