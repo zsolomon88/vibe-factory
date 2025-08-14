@@ -175,12 +175,11 @@
     });
   }
 
-  // AI logic: humanized with reaction delays, prediction errors, and imperfections
+  // AI logic: simplified fixed-speed movement like player, with human-like decision making
   let aiReactionDelay = 0;
   let aiTarget = 0;
   let aiLastBallY = 0;
-  let aiConfidence = 1.0;
-  let aiOvershootFactor = 0;
+  let aiDecision = 0; // -1 = move up, 0 = stay still, 1 = move down
   
   function updateAI() {
     // Human-like reaction delay (3-8 frames depending on ball speed)
@@ -191,7 +190,7 @@
     
     aiReactionDelay--;
     
-    // Only update target when reaction delay expires or ball direction changes significantly
+    // Only update decision when reaction delay expires or ball direction changes significantly
     const ballYChange = Math.abs(ball.y - aiLastBallY);
     if (aiReactionDelay <= 0 || ballYChange > 20) {
       aiReactionDelay = reactionFrames;
@@ -210,45 +209,49 @@
         predictedY += predictionError;
       }
       
-      // Confidence decreases with ball speed and distance
-      const distance = Math.abs(ball.x - ai.x);
-      aiConfidence = Math.max(0.3, 1.0 - (ballSpeed / 15) - (distance / 400));
-      
-      // Sometimes overshoot target (human tendency)
-      aiOvershootFactor = (Math.random() - 0.5) * 0.3 * (1 - aiConfidence);
-      
       aiTarget = predictedY + BALL_SIZE / 2 - PADDLE_HEIGHT / 2;
+      
+      // Make movement decision based on target position
+      const delta = aiTarget - ai.y;
+      const paddleCenter = ai.y + PADDLE_HEIGHT / 2;
+      const targetCenter = aiTarget + PADDLE_HEIGHT / 2;
+      const centerDelta = targetCenter - paddleCenter;
+      
+      // Add some decision threshold to avoid constant micro-movements
+      const moveThreshold = PADDLE_SPEED * 0.8;
+      
+      if (Math.abs(centerDelta) < moveThreshold) {
+        aiDecision = 0; // Stay still if close enough
+      } else if (centerDelta > 0) {
+        aiDecision = 1; // Move down
+      } else {
+        aiDecision = -1; // Move up
+      }
+      
+      // Sometimes make wrong decisions or hesitate (human-like mistakes)
+      const confidence = Math.max(0.3, 1.0 - (ballSpeed / 15));
+      
+      // Occasionally make wrong decision when confidence is low
+      if (confidence < 0.6 && Math.random() < 0.15) {
+        aiDecision *= -1; // Move in wrong direction
+      }
+      
+      // Sometimes hesitate and do nothing instead of moving
+      if (confidence < 0.5 && Math.random() < 0.2) {
+        aiDecision = 0; // Freeze up
+      }
+      
+      // Very rare "brain farts" - random wrong movements
+      if (Math.random() < 0.01) {
+        aiDecision = Math.random() < 0.5 ? -1 : 1; // Random direction
+      }
     }
     
-    // Move toward target with human-like imperfections
-    const delta = aiTarget - ai.y;
-    const absDelta = Math.abs(delta);
-    
-    // Add some overshoot when close to target
-    const overshoot = aiOvershootFactor * PADDLE_HEIGHT;
-    const adjustedTarget = aiTarget + overshoot;
-    const adjustedDelta = adjustedTarget - ai.y;
-    
-    // Variable speed based on confidence and urgency
-    const urgency = Math.min(absDelta / 50, 1); // More urgent when far from target
-    const speedMultiplier = 0.7 + (aiConfidence * 0.25) + (urgency * 0.15);
-    // Cap AI speed to never exceed player speed
-    const aiMax = PADDLE_SPEED * Math.min(speedMultiplier, 1.0);
-    
-    // Sometimes hesitate or move too cautiously when unsure
-    let responsiveness = 0.12;
-    if (aiConfidence < 0.6) {
-      responsiveness *= 0.7; // More sluggish when uncertain
-    }
-    
-    // Occasional "brain farts" - very rare random wrong movements
-    if (Math.random() < 0.002) {
-      responsiveness *= -0.3; // Briefly move wrong direction
-    }
-    
-    const step = clamp(adjustedDelta * responsiveness, -aiMax, aiMax);
-    ai.y += step;
-    ai.y = clamp(ai.y, 0, FIELD_SIZE - PADDLE_HEIGHT);
+    // Move at fixed speed based on decision (exactly like player)
+    let vy = 0;
+    if (aiDecision === -1) vy -= PADDLE_SPEED; // Move up
+    if (aiDecision === 1) vy += PADDLE_SPEED;   // Move down
+    ai.y = clamp(ai.y + vy, 0, FIELD_SIZE - PADDLE_HEIGHT);
   }
 
   function updatePlayer() {
