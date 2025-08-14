@@ -16,8 +16,23 @@
 - All work must be done on feature branches
 - Suggest creating pull requests when features are complete
 
+## Git Account Consistency
+- **MANDATORY**: Ensure Git is configured to use the same account as GitHub MCP tools
+- Before any Git operations, verify that the local Git user matches the GitHub MCP authenticated user
+- If accounts don't match, the AI assistant must prompt the user to configure Git properly
+- Never commit with mismatched accounts between Git and GitHub MCP tools
+
 ## Implementation Commands
-When starting a new chat context, run:
+When starting a new chat context:
+1. First verify Git account consistency:
+```bash
+# Check GitHub MCP authenticated user (via tool call)
+# Check local Git configuration
+git config user.name
+git config user.email
+```
+
+2. If accounts match, create feature branch:
 ```bash
 git checkout -b feature/$(date +%Y-%m-%d)-<descriptive-name>
 ```
@@ -45,8 +60,18 @@ git commit -m "<type>(<scope>): <description of changes>"
 
 ## AI Assistant Instructions
 You are required to:
-1. Create a new feature branch at the start of any new coding session
-2. Commit changes with appropriate messages at the end of each iteration
-3. Remind users to create pull requests when features are complete
-4. Never perform any Git operations on main or master branches
-5. **ALWAYS use GitHub MCP tools instead of GitHub CLI for any GitHub-related operations**
+1. **FIRST**: Verify Git account consistency by checking GitHub MCP authenticated user and local Git config
+2. If accounts don't match, stop and request the user to configure Git properly before proceeding
+3. Create a new feature branch at the start of any new coding session (only after account verification)
+4. Commit changes with appropriate messages at the end of each iteration
+5. Remind users to create pull requests when features are complete
+6. Never perform any Git operations on main or master branches
+7. **ALWAYS use GitHub MCP tools instead of GitHub CLI for any GitHub-related operations**
+
+## Account Verification Process
+At the start of each session, the AI assistant must:
+1. Call `mcp_github_get_me` to get the authenticated GitHub account
+2. Run `git config user.name` and `git config user.email` to check local Git config
+3. Compare the accounts and ensure they match
+4. If they don't match, provide clear instructions to the user on how to configure Git properly
+5. Only proceed with Git operations after account consistency is verified
