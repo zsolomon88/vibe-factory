@@ -35,6 +35,31 @@
                         <div style="height:10px"></div>
                         <label class="menu-label" for="winningScore">Winning score</label>
                         <input id="winningScore" class="menu-input" type="number" min="1" max="21" step="1" value="3" />
+                        <div style="height:10px"></div>
+                        <div class="menu-label">AI Difficulty</div>
+                        <div class="difficulty-options">
+                            <label class="difficulty-option">
+                                <input type="radio" name="difficulty" value="easy" />
+                                <div>
+                                    <div class="difficulty-text">Easy</div>
+                                    <div class="difficulty-desc">AI makes mistakes</div>
+                                </div>
+                            </label>
+                            <label class="difficulty-option">
+                                <input type="radio" name="difficulty" value="normal" checked />
+                                <div>
+                                    <div class="difficulty-text">Normal</div>
+                                    <div class="difficulty-desc">Balanced gameplay</div>
+                                </div>
+                            </label>
+                            <label class="difficulty-option">
+                                <input type="radio" name="difficulty" value="hard" />
+                                <div>
+                                    <div class="difficulty-text">Hard</div>
+                                    <div class="difficulty-desc">AI plays strategically</div>
+                                </div>
+                            </label>
+                        </div>
                         <button id="startBtn" class="menu-button" type="button">Start Game</button>
                         <div class="menu-help">
                             <p>Controls</p>

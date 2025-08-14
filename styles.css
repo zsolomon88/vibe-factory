@@ -245,6 +245,131 @@ canvas#gameCanvas {
     margin: 6px 0 0 18px;
 }
 
+/* Difficulty selection styles */
+.difficulty-options {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    margin: 8px 0;
+    flex-wrap: wrap;
+}
+
+.difficulty-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--input-bg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+}
+
+[data-theme="light"] .difficulty-option {
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.difficulty-option:hover {
+    border-color: var(--accent);
+    background: rgba(0, 224, 184, 0.05);
+    transform: translateY(-1px);
+}
+
+.difficulty-option input[type="radio"] {
+    margin: 0;
+    accent-color: var(--accent);
+}
+
+/* Easy difficulty - Green */
+.difficulty-option:has(input[value="easy"]) input[type="radio"] {
+    accent-color: #10b981;
+}
+
+.difficulty-option:has(input[value="easy"]:checked) {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.15);
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2);
+}
+
+.difficulty-option:has(input[value="easy"]:checked) .difficulty-text {
+    color: #10b981;
+}
+
+/* Normal difficulty - Blue */
+.difficulty-option:has(input[value="normal"]) input[type="radio"] {
+    accent-color: var(--accent-2);
+}
+
+.difficulty-option:has(input[value="normal"]:checked) {
+    border-color: var(--accent-2);
+    background: rgba(41, 163, 255, 0.15);
+    box-shadow: 0 0 0 1px rgba(41, 163, 255, 0.2);
+}
+
+.difficulty-option:has(input[value="normal"]:checked) .difficulty-text {
+    color: var(--accent-2);
+}
+
+/* Hard difficulty - Red */
+.difficulty-option:has(input[value="hard"]) input[type="radio"] {
+    accent-color: #ef4444;
+}
+
+.difficulty-option:has(input[value="hard"]:checked) {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2);
+}
+
+.difficulty-option:has(input[value="hard"]:checked) .difficulty-text {
+    color: #ef4444;
+}
+
+.difficulty-text {
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+    font-size: 14px;
+    transition: color 0.2s ease;
+}
+
+.difficulty-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.2;
+    margin-top: 2px;
+}
+
+.difficulty-option > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .difficulty-options {
+        flex-direction: column;
+    }
+    
+    .difficulty-option {
+        flex-direction: row;
+        align-items: flex-start;
+        text-align: left;
+        padding: 10px;
+    }
+    
+    .difficulty-option > div {
+        align-items: flex-start;
+    }
+}
+
 .scoreboard {
     position: sticky;
     bottom: 0;

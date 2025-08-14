@@ -22,9 +22,10 @@
   let playerName = "Player";
   let playerScore = 0;
   let aiScore = 0;
+  let difficulty = "normal"; // 'easy', 'normal', 'hard'
 
   const player = { x: PLAYER_X, y: (FIELD_SIZE - PADDLE_HEIGHT) / 2, vy: 0 };
-  const ai = { x: AI_X, y: (FIELD_SIZE - PADDLE_HEIGHT) / 2, vy: 0 };
+  const ai = { x: AI_X, y: (FIELD_SIZE - PADDLE_HEIGHT) / 2, vy: 0, lastDirection: 0, directionFrames: 0 };
   const ball = {
     x: FIELD_SIZE / 2,
     y: FIELD_SIZE / 2,
@@ -48,6 +49,7 @@
   const goalFlashEl = document.getElementById("goalFlash");
   const countdownEl = document.getElementById("countdown");
   const countdownTextEl = document.getElementById("countdownText");
+  const difficultyInputs = document.querySelectorAll('input[name="difficulty"]');
 
   // Theme toggle elements
   const themeToggle = document.getElementById("themeToggle");
@@ -121,6 +123,9 @@
   function centerPaddles() {
     player.y = (FIELD_SIZE - PADDLE_HEIGHT) / 2;
     ai.y = (FIELD_SIZE - PADDLE_HEIGHT) / 2;
+    // Reset AI movement state
+    ai.lastDirection = 0;
+    ai.directionFrames = 0;
   }
 
   function startGame() {
@@ -136,6 +141,11 @@
       ? clamp(parsedTarget, 1, 21)
       : 3;
     if (winningScoreInput) winningScoreInput.value = String(targetScore);
+    
+    // Get selected difficulty
+    const selectedDifficulty = document.querySelector('input[name="difficulty"]:checked');
+    difficulty = selectedDifficulty ? selectedDifficulty.value : "normal";
+    
     playerLabel.textContent = playerName;
     aiLabel.textContent = "AI";
     playerScore = 0;
@@ -175,14 +185,87 @@
     });
   }
 
-  // AI logic: simple proportional controller toward ball y with reaction delay and max speed
+  // AI logic: moves at constant rate like player with smooth direction changes
   function updateAI() {
-    const targetY = ball.y + BALL_SIZE / 2 - PADDLE_HEIGHT / 2;
-    const delta = targetY - ai.y;
-    const aiMax = PADDLE_SPEED * 0.95;
-    const step = clamp(delta * 0.12, -aiMax, aiMax);
-    ai.y += step;
-    ai.y = clamp(ai.y, 0, FIELD_SIZE - PADDLE_HEIGHT);
+    let targetY = ball.y + BALL_SIZE / 2 - PADDLE_HEIGHT / 2;
+    let aiCenterY = ai.y + PADDLE_HEIGHT / 2;
+    
+    if (difficulty === "easy") {
+      // Easy mode: AI makes mistakes and reacts slower
+      
+      // Add random mistake chance (8% of the time)
+      if (Math.random() < 0.08) {
+        // Move in wrong direction occasionally
+        targetY = ai.y + (Math.random() - 0.5) * PADDLE_HEIGHT;
+      } else if (Math.random() < 0.12) {
+        // Add noise to target position (overshoot/undershoot)
+        targetY += (Math.random() - 0.5) * PADDLE_HEIGHT * 0.6;
+      }
+      
+      // Easy mode: slower reaction - only respond 75% of the time
+      if (Math.random() < 0.25) {
+        // Continue in same direction as last frame to reduce jerkiness
+        ai.y = clamp(ai.y + ai.lastDirection * PADDLE_SPEED, 0, FIELD_SIZE - PADDLE_HEIGHT);
+        return;
+      }
+      
+    } else if (difficulty === "hard") {
+      // Hard mode: AI plays strategically with prediction
+      
+      // Predict where ball will be when it reaches AI paddle
+      if (ball.vx > 0) { // Ball coming towards AI
+        const timeToReach = (ai.x - ball.x) / Math.abs(ball.vx);
+        const predictedY = ball.y + ball.vy * timeToReach;
+        
+        // Try to position paddle to hit ball at strategic angles
+        if (predictedY < FIELD_SIZE / 2) {
+          // Ball in upper half, try to hit it even higher
+          targetY = predictedY - PADDLE_HEIGHT * 0.3;
+        } else {
+          // Ball in lower half, try to hit it even lower  
+          targetY = predictedY + PADDLE_HEIGHT * 0.3;
+        }
+      }
+    }
+    
+    // Calculate desired direction
+    const delta = targetY - aiCenterY;
+    const threshold = PADDLE_SPEED * 1.5; // Larger dead zone for smoother movement
+    
+    let desiredDirection = 0;
+    if (delta > threshold) {
+      desiredDirection = 1; // Want to move down
+    } else if (delta < -threshold) {
+      desiredDirection = -1; // Want to move up
+    }
+    
+    // Smooth direction changes to reduce jerkiness
+    if (desiredDirection === ai.lastDirection) {
+      // Continue in same direction
+      ai.directionFrames++;
+    } else if (desiredDirection === 0) {
+      // Gradually slow down before stopping
+      if (ai.directionFrames > 3) {
+        ai.lastDirection = 0;
+        ai.directionFrames = 0;
+      } else {
+        desiredDirection = ai.lastDirection; // Keep moving briefly
+        ai.directionFrames++;
+      }
+    } else {
+      // Changing direction - require a few frames of consistent desire
+      if (ai.directionFrames > 2 || Math.abs(delta) > threshold * 2) {
+        ai.lastDirection = desiredDirection;
+        ai.directionFrames = 0;
+      } else {
+        desiredDirection = ai.lastDirection; // Don't change yet
+        ai.directionFrames++;
+      }
+    }
+    
+    // Move at constant speed
+    const vy = desiredDirection * PADDLE_SPEED;
+    ai.y = clamp(ai.y + vy, 0, FIELD_SIZE - PADDLE_HEIGHT);
   }
 
   function updatePlayer() {
@@ -203,7 +286,17 @@
     if (lastHitBy === "player") {
       return isLightTheme ? [30, 41, 59] : [231, 238, 247]; // dark in light theme, light in dark theme
     }
-    if (lastHitBy === "ai") return [41, 163, 255]; // blue (same in both themes)
+    if (lastHitBy === "ai") {
+      // AI trail color matches difficulty
+      switch (difficulty) {
+        case "easy":
+          return [16, 185, 129]; // Green for easy (#10b981)
+        case "hard":
+          return [239, 68, 68]; // Red for hard (#ef4444)
+        default: // normal
+          return [41, 163, 255]; // Blue for normal (#29a3ff)
+      }
+    }
     return isLightTheme ? [0, 184, 148] : [0, 224, 184]; // slightly darker green in light theme
   }
 
@@ -419,7 +512,21 @@
     // paddles with contrasting colors
     ctx.fillStyle = isLightTheme ? "#1e293b" : "#e7eef7"; // player: dark in light theme, light in dark theme
     ctx.fillRect(player.x, player.y, PADDLE_WIDTH, PADDLE_HEIGHT);
-    ctx.fillStyle = "#29a3ff"; // AI: blue (same in both themes)
+    
+    // AI paddle color based on difficulty
+    let aiColor;
+    switch (difficulty) {
+      case "easy":
+        aiColor = "#10b981"; // Green for easy
+        break;
+      case "hard":
+        aiColor = "#ef4444"; // Red for hard
+        break;
+      default: // normal
+        aiColor = "#29a3ff"; // Blue for normal
+        break;
+    }
+    ctx.fillStyle = aiColor;
     ctx.fillRect(ai.x, ai.y, PADDLE_WIDTH, PADDLE_HEIGHT);
 
     // trail and ball
@@ -489,16 +596,26 @@
     // Initialize theme
     initTheme();
 
-    // Pre-fill player name from localStorage
+    // Pre-fill player name and settings from localStorage
     try {
       const saved = localStorage.getItem("neopong:playerName");
       if (saved) playerNameInput.value = saved;
       const savedTarget = localStorage.getItem("neopong:targetScore");
       if (savedTarget && winningScoreInput)
         winningScoreInput.value = savedTarget;
+      
+      // Load saved difficulty
+      const savedDifficulty = localStorage.getItem("neopong:difficulty");
+      if (savedDifficulty) {
+        difficulty = savedDifficulty;
+        const difficultyInput = document.querySelector(`input[name="difficulty"][value="${savedDifficulty}"]`);
+        if (difficultyInput) {
+          difficultyInput.checked = true;
+        }
+      }
     } catch (_) {}
 
-    // Persist name and winning score when changed
+    // Persist name, winning score, and difficulty when changed
     playerNameInput.addEventListener("change", () => {
       try {
         localStorage.setItem(
@@ -517,6 +634,15 @@
         } catch (_) {}
       });
     }
+    
+    // Save difficulty when changed
+    difficultyInputs.forEach(input => {
+      input.addEventListener("change", () => {
+        try {
+          localStorage.setItem("neopong:difficulty", input.value);
+        } catch (_) {}
+      });
+    });
 
     // Add theme toggle event listener
     themeToggle.addEventListener("click", toggleTheme);
