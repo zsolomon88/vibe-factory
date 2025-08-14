@@ -232,7 +232,8 @@
     // Variable speed based on confidence and urgency
     const urgency = Math.min(absDelta / 50, 1); // More urgent when far from target
     const speedMultiplier = 0.7 + (aiConfidence * 0.25) + (urgency * 0.15);
-    const aiMax = PADDLE_SPEED * speedMultiplier;
+    // Cap AI speed to never exceed player speed
+    const aiMax = PADDLE_SPEED * Math.min(speedMultiplier, 1.0);
     
     // Sometimes hesitate or move too cautiously when unsure
     let responsiveness = 0.12;
