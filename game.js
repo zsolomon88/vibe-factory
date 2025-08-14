@@ -286,7 +286,17 @@
     if (lastHitBy === "player") {
       return isLightTheme ? [30, 41, 59] : [231, 238, 247]; // dark in light theme, light in dark theme
     }
-    if (lastHitBy === "ai") return [41, 163, 255]; // blue (same in both themes)
+    if (lastHitBy === "ai") {
+      // AI trail color matches difficulty
+      switch (difficulty) {
+        case "easy":
+          return [16, 185, 129]; // Green for easy (#10b981)
+        case "hard":
+          return [239, 68, 68]; // Red for hard (#ef4444)
+        default: // normal
+          return [41, 163, 255]; // Blue for normal (#29a3ff)
+      }
+    }
     return isLightTheme ? [0, 184, 148] : [0, 224, 184]; // slightly darker green in light theme
   }
 
