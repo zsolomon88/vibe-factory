@@ -1,10 +1,29 @@
 :root {
+    /* Dark theme (default) */
     --bg: #0b0e13;
     --panel: #121722;
     --text: #e7eef7;
     --muted: #8aa0b8;
     --accent: #00e0b8;
     --accent-2: #29a3ff;
+    --canvas-bg: linear-gradient(180deg, #0f1a28 0%, #0b111a 100%);
+    --menu-bg: linear-gradient(180deg, rgba(11,14,19,0.75), rgba(11,14,19,0.85));
+    --input-bg: #0e1420;
+    --scoreboard-bg: rgba(6,10,16,0.75);
+}
+
+/* Light theme */
+[data-theme="light"] {
+    --bg: #f8fafc;
+    --panel: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --accent: #00e0b8;
+    --accent-2: #29a3ff;
+    --canvas-bg: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 100%);
+    --menu-bg: linear-gradient(180deg, rgba(248,250,252,0.75), rgba(248,250,252,0.85));
+    --input-bg: #f1f5f9;
+    --scoreboard-bg: rgba(255,255,255,0.75);
 }
 
 * { box-sizing: border-box; }
@@ -16,6 +35,11 @@ body {
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
     color: var(--text);
     background: radial-gradient(1200px 1200px at 80% -10%, #10233a 0%, var(--bg) 50%);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="light"] body {
+    background: radial-gradient(1200px 1200px at 80% -10%, #e2e8f0 0%, var(--bg) 50%);
 }
 
 .app {
@@ -26,11 +50,44 @@ body {
 
 .header {
     padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .title {
     margin: 0;
     font-weight: 800;
     letter-spacing: 1px;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    background: var(--panel);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+[data-theme="light"] .theme-toggle {
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.theme-toggle:hover {
+    background: var(--accent);
+    color: #03121a;
+    transform: translateY(-1px);
+}
+
+.theme-toggle:active {
+    transform: translateY(0);
 }
 
 .main {
@@ -52,8 +109,13 @@ canvas#gameCanvas {
     width: 100%;
     height: 100%;
     display: block;
-    background: linear-gradient(180deg, #0f1a28 0%, #0b111a 100%);
+    background: var(--canvas-bg);
     outline: 1px solid rgba(255,255,255,0.06);
+    transition: background 0.3s ease;
+}
+
+[data-theme="light"] canvas#gameCanvas {
+    outline: 1px solid rgba(0,0,0,0.1);
 }
 
 /* Goal flash overlay */
@@ -88,7 +150,7 @@ canvas#gameCanvas {
     font-size: 72px;
     font-weight: 900;
     letter-spacing: 1px;
-    color: #e7eef7;
+    color: var(--text);
     text-shadow: 0 6px 32px rgba(0, 224, 184, 0.25);
     opacity: 0;
     transform: scale(0.85);
@@ -104,7 +166,8 @@ canvas#gameCanvas {
     inset: 0;
     display: grid;
     place-items: center;
-    background: linear-gradient(180deg, rgba(11,14,19,0.75), rgba(11,14,19,0.85));
+    background: var(--menu-bg);
+    transition: background 0.3s ease;
 }
 
 .menu-card {
@@ -115,6 +178,12 @@ canvas#gameCanvas {
     border-radius: 14px;
     padding: 24px;
     box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+[data-theme="light"] .menu-card {
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.15);
 }
 
 .menu-card h2 {
@@ -138,10 +207,18 @@ canvas#gameCanvas {
     padding: 10px 12px;
     border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.08);
-    background: #0e1420;
+    background: var(--input-bg);
     color: var(--text);
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
+
+[data-theme="light"] .menu-input {
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
 .menu-input::placeholder { color: #6b7b90; }
+
+[data-theme="light"] .menu-input::placeholder { color: #94a3b8; }
 
 .menu-button {
     margin-top: 14px;
@@ -172,9 +249,14 @@ canvas#gameCanvas {
     position: sticky;
     bottom: 0;
     width: 100%;
-    background: rgba(6,10,16,0.75);
+    background: var(--scoreboard-bg);
     border-top: 1px solid rgba(255,255,255,0.06);
     backdrop-filter: blur(8px);
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+[data-theme="light"] .scoreboard {
+    border-top: 1px solid rgba(0,0,0,0.1);
 }
 .scoreboard-inner {
     max-width: 960px;
