@@ -1,0 +1,36 @@
+# Git Workflow Automation Rules
+
+## Branch Management
+- At the start of each new chat context, create a new feature branch with a descriptive name based on the task
+- Use the format: `feature/YYYY-MM-DD-descriptive-name` for feature branches
+- Always work on feature branches, never directly on main or master
+
+## Commit Management  
+- At the end of each chat iteration when changes are kept, commit them with a descriptive message
+- Use conventional commit format: `type(scope): description`
+- Commit types: feat, fix, docs, style, refactor, test, chore
+- Always stage and commit all changes before ending a conversation
+
+## Branch Protection
+- Never commit or push directly to main or master branches
+- All work must be done on feature branches
+- Suggest creating pull requests when features are complete
+
+## Implementation Commands
+When starting a new chat context, run:
+```bash
+git checkout -b feature/$(date +%Y-%m-%d)-<descriptive-name>
+```
+
+When ending a chat iteration with changes:
+```bash
+git add .
+git commit -m "<type>(<scope>): <description of changes>"
+```
+
+## AI Assistant Instructions
+You are required to:
+1. Create a new feature branch at the start of any new coding session
+2. Commit changes with appropriate messages at the end of each iteration
+3. Remind users to create pull requests when features are complete
+4. Never perform any Git operations on main or master branches
