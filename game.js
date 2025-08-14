@@ -182,15 +182,13 @@
     });
   }
 
-  // AI logic: behavior changes based on difficulty
+  // AI logic: moves at constant rate like player, behavior changes based on difficulty
   function updateAI() {
     let targetY = ball.y + BALL_SIZE / 2 - PADDLE_HEIGHT / 2;
+    let aiCenterY = ai.y + PADDLE_HEIGHT / 2;
     
     if (difficulty === "easy") {
-      // Easy mode: AI makes mistakes
-      // 1. Slower reaction time
-      // 2. Occasionally moves in wrong direction  
-      // 3. Sometimes overshoots or undershoots
+      // Easy mode: AI makes mistakes and reacts slower
       
       // Add random mistake chance (10% of the time)
       if (Math.random() < 0.1) {
@@ -201,24 +199,20 @@
         targetY += (Math.random() - 0.5) * PADDLE_HEIGHT * 0.8;
       }
       
-      const delta = targetY - ai.y;
-      const aiMax = PADDLE_SPEED * 0.7; // Slower than normal
-      const step = clamp(delta * 0.08, -aiMax, aiMax); // Slower reaction
-      ai.y += step;
+      // Easy mode: slower reaction - only respond 70% of the time
+      if (Math.random() < 0.3) {
+        return; // Don't move this frame (slower reaction)
+      }
       
     } else if (difficulty === "hard") {
-      // Hard mode: AI plays strategically
-      // 1. Faster reaction time
-      // 2. Tries to hit ball at angles that are hard for player
-      // 3. Predicts ball movement better
+      // Hard mode: AI plays strategically with prediction
       
       // Predict where ball will be when it reaches AI paddle
-      const timeToReach = (ai.x - ball.x) / Math.abs(ball.vx);
-      const predictedY = ball.y + ball.vy * timeToReach;
-      
-      // Try to position paddle to hit ball at strategic angles
       if (ball.vx > 0) { // Ball coming towards AI
-        // Aim for edges to make it harder for player
+        const timeToReach = (ai.x - ball.x) / Math.abs(ball.vx);
+        const predictedY = ball.y + ball.vy * timeToReach;
+        
+        // Try to position paddle to hit ball at strategic angles
         if (predictedY < FIELD_SIZE / 2) {
           // Ball in upper half, try to hit it even higher
           targetY = predictedY - PADDLE_HEIGHT * 0.3;
@@ -226,25 +220,22 @@
           // Ball in lower half, try to hit it even lower  
           targetY = predictedY + PADDLE_HEIGHT * 0.3;
         }
-      } else {
-        // Ball moving away, just track it normally but faster
-        targetY = ball.y + BALL_SIZE / 2 - PADDLE_HEIGHT / 2;
       }
-      
-      const delta = targetY - ai.y;
-      const aiMax = PADDLE_SPEED * 1.1; // Faster than normal
-      const step = clamp(delta * 0.16, -aiMax, aiMax); // Faster reaction
-      ai.y += step;
-      
-    } else {
-      // Normal mode: current behavior
-      const delta = targetY - ai.y;
-      const aiMax = PADDLE_SPEED * 0.95;
-      const step = clamp(delta * 0.12, -aiMax, aiMax);
-      ai.y += step;
     }
     
-    ai.y = clamp(ai.y, 0, FIELD_SIZE - PADDLE_HEIGHT);
+    // AI moves at constant rate like player
+    const delta = targetY - aiCenterY;
+    const threshold = PADDLE_SPEED * 0.5; // Dead zone to prevent jittering
+    
+    let vy = 0;
+    if (delta > threshold) {
+      vy = PADDLE_SPEED; // Move down
+    } else if (delta < -threshold) {
+      vy = -PADDLE_SPEED; // Move up
+    }
+    // Otherwise stay still (vy = 0)
+    
+    ai.y = clamp(ai.y + vy, 0, FIELD_SIZE - PADDLE_HEIGHT);
   }
 
   function updatePlayer() {
