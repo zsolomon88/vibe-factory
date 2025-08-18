@@ -28,7 +28,7 @@ const settings = {
     brickWidth: 75,
     brickHeight: 20,
     brickPadding: 10,
-    brickOffsetTop: 30,
+    brickOffsetTop: 60, // Increased from 30
     brickOffsetLeft: 30,
 };
 
@@ -90,7 +90,7 @@ function resetPlayer() {
 
 function resetPaddle() {
     paddle.x = (canvas.width - paddle.width) / 2;
-    paddle.y = canvas.height - paddle.height - 20;
+    paddle.y = canvas.height - paddle.height - 40; // Increased from 20
 }
 
 function resetBall() {
