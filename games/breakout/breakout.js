@@ -24,7 +24,7 @@ const settings = {
     paddleSpeed: 8,
     ballRadius: 10,
     brickRowCount: 5,
-    brickColumnCount: 8,
+    brickColumnCount: 6, // Changed from 8
     brickWidth: 75,
     brickHeight: 20,
     brickPadding: 10,
