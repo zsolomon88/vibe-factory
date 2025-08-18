@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoBreakout</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body>
+    <div class="app">
+        <header class="header">
+            <a href="/" class="title">Vibe Factory</a>
+            <div>
+                <button id="theme-toggle" class="theme-toggle">
+                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M7.49999 0.875001C11.3125 0.875001 14.375 3.9375 14.375 7.75C14.375 11.5625 11.3125 14.625 7.49999 14.625C3.68749 14.625 0.624992 11.5625 0.624992 7.75C0.624992 3.9375 3.68749 0.875001 7.49999 0.875001ZM7.49999 2.125C4.38124 2.125 1.87499 4.63125 1.87499 7.75C1.87499 10.8688 4.38124 13.375 7.49999 13.375C10.6187 13.375 13.125 10.8688 13.125 7.75C13.125 4.63125 10.6187 2.125 7.49999 2.125Z"
+                            fill="currentColor" fill-opacity="0.5" />
+                        <path
+                            d="M7.5 14.375C11.3125 14.375 14.375 11.3125 14.375 7.5C14.375 3.6875 11.3125 0.625 7.5 0.625C7.5 0.625 7.5 14.375 7.5 14.375Z"
+                            fill="currentColor" />
+                    </svg>
+                    <span>Toggle theme</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="main">
+            <div id="stage" class="stage-wrapper">
+                <canvas id="gameCanvas"></canvas>
+
+                <div id="countdown" class="countdown-overlay">
+                    <div class="countdown-text"></div>
+                </div>
+
+                <div id="menu" class="menu-overlay">
+                    <div class="menu-card">
+                        <h2>NeoBreakout</h2>
+                        <p class="menu-sub">Smash all the bricks to win!</p>
+
+                        <div id="start-menu">
+                            <label for="playerName" class="menu-label">Enter your name</label>
+                            <input type="text" id="playerName" class="menu-input" placeholder="Player Name"
+                                value="Player 1">
+                            <div class="menu-gamemode">
+                                <label class="menu-radio">
+                                    <input type="radio" name="difficulty" value="easy" checked>
+                                    <span>Easy</span>
+                                </label>
+                                <label class="menu-radio">
+                                    <input type="radio" name="difficulty" value="medium">
+                                    <span>Medium</span>
+                                </label>
+                                <label class="menu-radio">
+                                    <input type="radio" name="difficulty" value="hard">
+                                    <span>Hard</span>
+                                </label>
+                            </div>
+                            <button id="startGame" class="menu-button">Start Game</button>
+                        </div>
+
+                        <div id="end-menu" style="display: none;">
+                            <h3 id="end-title">Game Over!</h3>
+                            <p id="end-message">Better luck next time!</p>
+                            <button id="restartGame" class="menu-button">Play again</button>
+                            <a href="/" class="menu-button" style="text-align: center; text-decoration: none; display: block; margin-top: 10px;">Back to Menu</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scoreboard">
+                <div class="scoreboard-inner">
+                    <div id="player-info" class="scores"></div>
+                    <div id="lives-info" class="scores"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="breakout.js"></script>
+    <script src="../../theme.js"></script>
+
+</body>
+
+</html>
