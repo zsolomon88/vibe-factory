@@ -91,6 +91,7 @@ function resetPlayer() {
 function resetPaddle() {
     paddle.x = (canvas.width - paddle.width) / 2;
     paddle.y = canvas.height - paddle.height - 40; // Increased from 20
+    paddle.dx = 0; // Also reset horizontal movement
 }
 
 function resetBall() {
@@ -98,6 +99,7 @@ function resetBall() {
     ball.y = paddle.y - ball.radius - 5;
     ball.dx = ball.speed * (Math.random() < 0.5 ? 1 : -1);
     ball.dy = -ball.speed;
+    ball.trail = []; // Clear the trail
 }
 
 function createBricks() {
@@ -304,6 +306,7 @@ function startRound() {
     gameRunning = false;
     cancelAnimationFrame(animationFrameId);
     resetBall();
+    resetPaddle(); // Center the paddle
     draw();
     countdown();
 }
