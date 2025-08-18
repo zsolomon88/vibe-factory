@@ -66,6 +66,7 @@ let ball = {
 
 let bricks = [];
 let particles = []; // Array to hold particles
+let roundOver = false; // To pause game logic for animations
 
 function initGame() {
     resizeCanvas();
@@ -127,6 +128,9 @@ function drawPaddle() {
 }
 
 function drawBall() {
+    // Don't draw ball if game isn't running (i.e. during countdown) or if round is over (explosion)
+    if (!gameRunning || roundOver) return;
+
     // Draw trail
     for (let i = 0; i < ball.trail.length; i++) {
         const p = ball.trail[i];
@@ -211,7 +215,7 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawPaddle();
-    if(gameRunning) drawBall();
+    drawBall();
     drawParticles();
 }
 
@@ -260,13 +264,16 @@ function moveBall() {
         player.lives--;
         updateScoreboard();
         createExplosion(ball.x, paddle.y); // Create explosion
+        roundOver = true;
+
         if (player.lives > 0) {
             stage.classList.add('shake');
             setTimeout(() => stage.classList.remove('shake'), 320);
-            startRound();
+            setTimeout(startRound, 1500); // Wait for explosion to play out
         } else {
-            endGame(false);
+            setTimeout(() => endGame(false), 1500);
         }
+        return; // Stop further processing this frame
     }
 }
 
@@ -296,9 +303,11 @@ function collisionDetection() {
 }
 
 function update() {
-    movePaddle();
-    moveBall();
-    collisionDetection();
+    if (!roundOver) {
+        movePaddle();
+        moveBall();
+        collisionDetection();
+    }
     updateParticles();
     draw();
 
@@ -353,6 +362,7 @@ function startRound() {
     cancelAnimationFrame(animationFrameId);
     resetBall();
     resetPaddle(); // Center the paddle
+    roundOver = false; // Reset for the new round
     draw();
     countdown();
 }
