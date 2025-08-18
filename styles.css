@@ -151,7 +151,6 @@ body {
     width: 80px;
     height: 80px;
     margin: 0 auto 12px;
-    background: var(--panel);
     border-radius: 10px;
 }
 
