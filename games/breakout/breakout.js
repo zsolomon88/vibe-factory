@@ -67,7 +67,19 @@ let ball = {
 let bricks = [];
 let particles = []; // Array to hold particles
 let roundOver = false; // To pause game logic for animations
-const rowColors = ['#89c3ff', '#7aa5f5', '#f5d570', '#c7b2f9', '#a2f2a7'];
+
+const darkThemeColors = ['#58a6ff', '#1f6feb', '#e3b341', '#a371f7', '#7ee787'];
+const lightThemeColors = ['#0d47a1', '#1976d2', '#f57c00', '#6a1b9a', '#2e7d32'];
+
+function getBrickColor(row) {
+    const isLightTheme = document.documentElement.getAttribute('data-theme') === 'light';
+    const colors = isLightTheme ? lightThemeColors : darkThemeColors;
+    return colors[row];
+}
+
+function getPaddleColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+}
 
 function initGame() {
     resizeCanvas();
@@ -123,7 +135,7 @@ function updateScoreboard() {
 function drawPaddle() {
     ctx.beginPath();
     ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    ctx.fillStyle = getPaddleColor();
     ctx.fill();
     ctx.closePath();
 }
@@ -146,7 +158,7 @@ function drawBall() {
     // Draw ball
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    ctx.fillStyle = getPaddleColor();
     ctx.fill();
     ctx.closePath();
 }
@@ -161,7 +173,7 @@ function drawBricks() {
                 bricks[c][r].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, settings.brickWidth, settings.brickHeight);
-                ctx.fillStyle = rowColors[r];
+                ctx.fillStyle = getBrickColor(r);
                 ctx.fill();
                 ctx.closePath();
             }
@@ -356,6 +368,16 @@ restartGameBtn.addEventListener('click', () => {
     startMenu.style.display = 'block';
     menu.style.display = 'grid';
 });
+
+const themeChangeObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+            draw();
+        }
+    });
+});
+
+themeChangeObserver.observe(document.documentElement, { attributes: true });
 
 function startRound() {
     gameRunning = false;
