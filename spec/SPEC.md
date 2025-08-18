@@ -4,7 +4,8 @@ Specifically it has the following features
 
 ### Design
 
-- Main menu where the player can select from a list of supported games
+- Main menu where the player can select from a grid of supported games
+- Each game in the grid is represented by a card that includes the game's name, an icon, and the number of supported players
 - Selecting a game will launch the associated game
 
 ### Supported Games
