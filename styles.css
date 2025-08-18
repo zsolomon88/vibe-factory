@@ -220,6 +220,47 @@ canvas#gameCanvas {
     margin: 0 0 6px 0;
 }
 
+.menu-gamemode {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.menu-radio {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+}
+
+.menu-radio input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.menu-radio span {
+    display: block;
+    text-align: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--input-bg);
+    color: var(--muted);
+    transition: all 0.2s ease;
+}
+
+[data-theme="light"] .menu-radio span {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.menu-radio input:checked+span {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #03121a;
+    font-weight: 600;
+}
+
 .menu-sub {
     margin: 0 0 18px 0;
     color: var(--muted);
