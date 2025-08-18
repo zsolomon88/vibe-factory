@@ -21,11 +21,24 @@ A small, browser-based take on the classic Pong. Play against an AI or a friend 
     - Player 1: W/S to move up/down.
     - Player 2: Up/Down arrow keys to move up/down.
 
+#### NeoBreakout
+A classic brick-breaking game where the player controls a paddle to bounce a ball and destroy all the bricks on the screen.
+
+- **Features**:
+    - Start menu with difficulty settings (Easy, Medium, Hard).
+    - Five rows of bricks, with each row having a different color.
+    - Scoreboard to track score and lives.
+    - Particle explosion effect when a life is lost.
+- **Controls**:
+    - A/D to move the paddle left/right.
+
 ### File Structure
 - `index.html` – Main menu and game selector.
 - `styles.css` – Global layout, theme, and animations.
 - `scripts/theme.js` – Theme management logic.
 - `games/pong/index.html` – Markup and UI for NeoPong.
 - `games/pong/game.js` – Game loop, physics, and AI for NeoPong.
+- `games/breakout/index.html` – Markup and UI for NeoBreakout.
+- `games/breakout/breakout.js` – Game loop and logic for NeoBreakout.
 
 
