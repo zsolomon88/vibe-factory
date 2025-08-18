@@ -67,7 +67,7 @@ let ball = {
 let bricks = [];
 let particles = []; // Array to hold particles
 let roundOver = false; // To pause game logic for animations
-const rowColors = ['#FF5733', '#FFC300', '#DAF7A6', '#33FF57', '#33C4FF'];
+const rowColors = ['#58a6ff', '#1f6feb', '#e3b341', '#a371f7', '#7ee787'];
 
 function initGame() {
     resizeCanvas();
