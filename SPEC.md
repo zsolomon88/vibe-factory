@@ -5,9 +5,12 @@ Specifically it has the following features
 - Main menu where the player can provide a name and start the round
 - Start menu includes an input to set the winning score for the round
 - Single player mode where the player can play versus an AI
+- Two-player mode where players can compete against each other
+- Player 2 can enter their name in the main menu when two-player mode is selected
 - The map is a square containing two rectangular paddles and one square ball
 - The player's paddle is on the left side and can move in a linear direction up and down using the W and S keys
 - The AI's paddle is on the right side and has the same movement restrictions as the player's paddle, however the AI will control the paddle to try and hit the ball back
+- In two-player mode, the second player controls the right paddle using the up and down arrow keys
 - There is a score board on the bottom of the page that counts the number of goals for the player and their AI opponent
 - When a goal is scored, play a brief celebratory animation (e.g., flash, screen shake, and/or particle burst)
 - Before the ball spawns at the start of the round and after each goal, display a centered countdown animation: "3... 2... 1... START!"
