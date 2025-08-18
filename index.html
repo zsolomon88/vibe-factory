@@ -2,16 +2,16 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NeoPong</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Factory</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <div class="app">
         <header class="header">
-            <h1 class="title">NeoPong</h1>
+            <h1 class="title">Vibe Factory</h1>
             <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light mode">
                 <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -22,67 +22,25 @@
         </header>
 
         <main class="main">
-            <div class="stage-wrapper">
-                <canvas id="gameCanvas" width="720" height="720" aria-label="NeoPong game area"></canvas>
-                <div id="goalFlash" class="goal-flash" aria-hidden="true"></div>
-                <div id="countdown" class="countdown-overlay" aria-hidden="true">
-                    <div id="countdownText" class="countdown-text"></div>
-                </div>
-
-                <div id="menu" class="menu-overlay" role="dialog" aria-modal="true" aria-labelledby="menu-title">
-                    <div class="menu-card">
-                        <h2 id="menu-title">Welcome to NeoPong</h2>
-                        <p id="menu-sub" class="menu-sub">Enter your name and winning score, then press Start.</p>
-                        <div class="menu-gamemode">
-                            <label class="menu-radio">
-                                <input type="radio" id="vs-ai" name="gamemode" value="vs-ai" checked>
-                                <span>Player vs. AI</span>
-                            </label>
-                            <label class="menu-radio">
-                                <input type="radio" id="vs-player" name="gamemode" value="vs-player">
-                                <span>Player vs. Player</span>
-                            </label>
+            <div class="menu-card">
+                <h2>Select a Game</h2>
+                <div class="game-grid">
+                    <a href="games/pong/index.html" class="game-card">
+                        <div class="game-card-icon">
+                            <svg viewBox="0 0 100 100" fill="currentColor" role="img" aria-label="NeoPong Icon">
+                                <rect x="15" y="25" width="10" height="50" rx="5"></rect>
+                                <rect x="75" y="25" width="10" height="50" rx="5"></rect>
+                                <rect x="45" y="45" width="10" height="10" rx="2"></rect>
+                            </svg>
                         </div>
-                        <div id="player-names">
-                            <label class="menu-label" for="playerName">Player name</label>
-                            <input id="playerName" class="menu-input" type="text" placeholder="Player" maxlength="16" />
-                            <div id="player2-name-field" style="display: none;">
-                                <div style="height:10px"></div>
-                                <label class="menu-label" for="player2Name">Player 2 name</label>
-                                <input id="player2Name" class="menu-input" type="text" placeholder="Player 2"
-                                    maxlength="16" />
-                            </div>
-                        </div>
-                        <div style="height:10px"></div>
-                        <label class="menu-label" for="winningScore">Winning score</label>
-                        <input id="winningScore" class="menu-input" type="number" min="1" max="21" step="1" value="3" />
-                        <button id="startBtn" class="menu-button" type="button">Start Game</button>
-                        <div class="menu-help">
-                            <p>Controls</p>
-                            <ul>
-                                <li>W: move up</li>
-                                <li>S: move down</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="scoreboard" aria-live="polite">
-                <div class="scoreboard-inner">
-                    <span id="playerLabel">Player</span>
-                    <span class="scores">
-                        <span id="playerScore">0</span>
-                        <span class="sep">|</span>
-                        <span id="aiScore">0</span>
-                    </span>
-                    <span id="aiLabel">AI</span>
+                        <h3>NeoPong</h3>
+                        <p>1-2 Players</p>
+                    </a>
                 </div>
             </div>
         </main>
     </div>
-
-    <script src="game.js"></script>
+    <script src="scripts/theme.js"></script>
 </body>
 
 </html>

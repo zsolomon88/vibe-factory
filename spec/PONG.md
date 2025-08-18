@@ -4,7 +4,8 @@ Specifically it has the following features
 
 ### Game Design
 
-- Main menu where the player can provide a name and start the round
+- Start menu where the player can provide a name and start the round
+- "Back to Menu" button to return to the main game selection screen
 - Start menu includes an input to set the winning score for the round
 - The default winning score should be 3
 - Single player mode where the player can play versus an AI

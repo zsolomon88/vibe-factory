@@ -6,7 +6,6 @@
 - Always work on feature branches, never directly on main or master
 
 ## Commit Management  
-- At the end of each chat iteration when changes are kept, commit them with a descriptive message
 - Use conventional commit format: `type(scope): description`
 - Commit types: feat, fix, docs, style, refactor, test, chore
 - Always stage and commit all changes before ending a conversation
@@ -63,7 +62,7 @@ You are required to:
 1. **FIRST**: Verify Git account consistency by checking GitHub MCP authenticated user and local Git config
 2. If accounts don't match, stop and request the user to configure Git properly before proceeding
 3. Create a new feature branch at the start of any new coding session (only after account verification)
-4. Commit changes with appropriate messages at the end of each iteration
+4. Commit changes with appropriate messages when asked
 5. Remind users to create pull requests when features are complete
 6. Never perform any Git operations on main or master branches
 7. **ALWAYS use GitHub MCP tools instead of GitHub CLI for any GitHub-related operations**
