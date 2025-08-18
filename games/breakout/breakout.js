@@ -65,6 +65,7 @@ let ball = {
 };
 
 let bricks = [];
+let particles = []; // Array to hold particles
 
 function initGame() {
     resizeCanvas();
@@ -164,11 +165,54 @@ function drawBricks() {
     }
 }
 
+function createExplosion(x, y) {
+    const particleCount = 20;
+    const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+
+    for (let i = 0; i < particleCount; i++) {
+        particles.push({
+            x: x,
+            y: y,
+            radius: Math.random() * 3 + 1,
+            color: accentColor,
+            dx: (Math.random() - 0.5) * 8,
+            dy: (Math.random() - 0.5) * 8,
+            ttl: 100, // Time to live
+            opacity: 1,
+        });
+    }
+}
+
+function updateParticles() {
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.dx;
+        p.y += p.dy;
+        p.ttl--;
+        p.opacity = p.ttl / 100;
+
+        if (p.ttl <= 0) {
+            particles.splice(i, 1);
+        }
+    }
+}
+
+function drawParticles() {
+    for (const p of particles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 224, 184, ${p.opacity})`;
+        ctx.fill();
+        ctx.closePath();
+    }
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawPaddle();
-    drawBall();
+    if(gameRunning) drawBall();
+    drawParticles();
 }
 
 function movePaddle() {
@@ -215,6 +259,7 @@ function moveBall() {
     if (ball.y + ball.radius > canvas.height) {
         player.lives--;
         updateScoreboard();
+        createExplosion(ball.x, paddle.y); // Create explosion
         if (player.lives > 0) {
             stage.classList.add('shake');
             setTimeout(() => stage.classList.remove('shake'), 320);
@@ -254,6 +299,7 @@ function update() {
     movePaddle();
     moveBall();
     collisionDetection();
+    updateParticles();
     draw();
 
     if (gameRunning) {
