@@ -25,9 +25,9 @@ const settings = {
     ballRadius: 10,
     brickRowCount: 5,
     brickColumnCount: 6, // Changed from 8
-    brickWidth: 75,
-    brickHeight: 20,
-    brickPadding: 10,
+    brickWidth: 100, // Changed from 75
+    brickHeight: 24, // Changed from 20
+    brickPadding: 12, // Changed from 10
     brickOffsetTop: 60, // Increased from 30
     brickOffsetLeft: 30,
 };
