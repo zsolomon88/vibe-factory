@@ -60,6 +60,11 @@ body {
     align-items: center;
 }
 
+.header div {
+    display: flex;
+    gap: 10px;
+}
+
 .title {
     margin: 0;
     font-weight: 800;
