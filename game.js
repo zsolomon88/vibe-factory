@@ -50,6 +50,8 @@
   const countdownTextEl = document.getElementById("countdownText");
   const gameModeSelector = document.querySelector('input[name="gamemode"]:checked');
   const controlsHelp = document.querySelector(".menu-help ul");
+  const player2NameField = document.getElementById("player2-name-field");
+  const player2NameInput = document.getElementById("player2Name");
 
   // Theme toggle elements
   const themeToggle = document.getElementById("themeToggle");
@@ -151,7 +153,8 @@
         "Enter your name and winning score, then press Start.";
     gameMode = document.querySelector('input[name="gamemode"]:checked').value;
     if (gameMode === "vs-player") {
-      aiLabel.textContent = "Player 2";
+      const player2Name = player2NameInput.value.trim() || "Player 2";
+      aiLabel.textContent = player2Name;
     }
     startRound(Math.random() > 0.5 ? 1 : -1);
   }
@@ -194,11 +197,13 @@
                   <li>W: move up</li>
                   <li>S: move down</li>
               `;
+              player2NameField.style.display = "none";
           } else {
               controlsHelp.innerHTML = `
                   <li>Player 1: W/S</li>
                   <li>Player 2: Up/Down</li>
               `;
+              player2NameField.style.display = "block";
           }
       });
   });
