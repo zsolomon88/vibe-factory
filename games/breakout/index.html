@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoBreakout</title>
+    <link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body>
+    <div class="app">
+        <header class="header">
+            <h1 class="title">NeoBreakout</h1>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light mode">
+                <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <span id="themeText">Dark</span>
+            </button>
+        </header>
+
+        <main class="main">
+            <div id="stage" class="stage-wrapper">
+                <canvas id="gameCanvas"></canvas>
+
+                <div id="countdown" class="countdown-overlay">
+                    <div class="countdown-text"></div>
+                </div>
+
+                <div id="menu" class="menu-overlay">
+                    <div class="menu-card">
+                        <h2>NeoBreakout</h2>
+                        <p class="menu-sub">Smash all the bricks to win!</p>
+
+                        <div id="start-menu">
+                            <label for="playerName" class="menu-label">Enter your name</label>
+                            <input type="text" id="playerName" class="menu-input" placeholder="Player Name"
+                                value="Player 1">
+                            <div style="height:10px"></div>
+                            <label class="menu-label">Difficulty</label>
+                            <div class="menu-gamemode">
+                                <label class="menu-radio">
+                                    <input type="radio" name="difficulty" value="easy" checked>
+                                    <span>Easy</span>
+                                </label>
+                                <label class="menu-radio">
+                                    <input type="radio" name="difficulty" value="medium">
+                                    <span>Medium</span>
+                                </label>
+                                <label class="menu-radio">
+                                    <input type="radio" name="difficulty" value="hard">
+                                    <span>Hard</span>
+                                </label>
+                            </div>
+                            <button id="startGame" class="menu-button">Start Game</button>
+                            <div class="menu-help">
+                                <p>Controls</p>
+                                <ul>
+                                    <li>A: move left</li>
+                                    <li>D: move right</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="end-menu" style="display: none;">
+                            <h3 id="end-title">Game Over!</h3>
+                            <p id="end-message">Better luck next time!</p>
+                            <button id="restartGame" class="menu-button">Play again</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scoreboard">
+                <div class="scoreboard-inner">
+                    <div id="player-info" class="scores"></div>
+                    <div id="lives-info" class="scores"></div>
+                </div>
+            </div>
+        </main>
+        <footer class="footer">
+            <a href="../../index.html" class="menu-button">Back to Menu</a>
+        </footer>
+    </div>
+    <script src="breakout.js"></script>
+    <script src="../../scripts/theme.js"></script>
+
+</body>
+
+</html>
