@@ -9,10 +9,10 @@ Specifically it has the following features
 - "Back to Menu" button to return to the main game selection screen
 - Single player game
 - The player's paddle is on the bottom of the play area and can move in a linear direction left and right using the A and D keys
-- Above the player's paddle, occupying the top part of the play area, are five rows of bricks, each row has 8 bricks
+- Above the player's paddle, occupying the top part of the play area, are five rows of bricks, each row has 6 bricks
 - A ball spawns at the start of the round and can bounce off the player's paddle, the walls, and the bricks
 - If a ball contacts a brick, have the ball bounce off and then destroy the brick
-- If the ball contacts the bottom of the screen, below the player's paddle, the player loses one life
+- If the ball contacts the bottom of the screen, below the player's paddle, the player loses one life. An explosion animation will play.
 - The number of lives depends on the difficulty: 
 -- Easy: 5 lives
 -- Medium: 3 lives
@@ -27,4 +27,5 @@ Specifically it has the following features
 - There is a score board on the bottom of the page that counts the number of bricks destroyed and the number of lives remaining
 - Before the ball spawns at the start of the round and after each goal, display a centered countdown animation: "3... 2... 1... START!"
 - All game elements (paddles, ball, net, borders, particles, text) adapt to the selected theme for optimal readability
+- Each row of bricks has a different color.
 

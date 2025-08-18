@@ -11,6 +11,7 @@ Specifically it has the following features
 ### Supported Games
 
 - NeoPong (PONG.md)
+- NeoBreakout (BREAKOUT.md)
 
 ### Non-game specific design
 
