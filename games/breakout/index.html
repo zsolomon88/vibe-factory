@@ -12,16 +12,12 @@
     <div class="app">
         <header class="header">
             <h1 class="title">NeoBreakout</h1>
-            <button id="theme-toggle" class="theme-toggle">
-                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M7.49999 0.875001C11.3125 0.875001 14.375 3.9375 14.375 7.75C14.375 11.5625 11.3125 14.625 7.49999 14.625C3.68749 14.625 0.624992 11.5625 0.624992 7.75C0.624992 3.9375 3.68749 0.875001 7.49999 0.875001ZM7.49999 2.125C4.38124 2.125 1.87499 4.63125 1.87499 7.75C1.87499 10.8688 4.38124 13.375 7.49999 13.375C10.6187 13.375 13.125 10.8688 13.125 7.75C13.125 4.63125 10.6187 2.125 7.49999 2.125Z"
-                        fill="currentColor" fill-opacity="0.5" />
-                    <path
-                        d="M7.5 14.375C11.3125 14.375 14.375 11.3125 14.375 7.5C14.375 3.6875 11.3125 0.625 7.5 0.625C7.5 0.625 7.5 14.375 7.5 14.375Z"
-                        fill="currentColor" />
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light mode">
+                <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>
-                <span>Toggle theme</span>
+                <span id="themeText">Dark</span>
             </button>
         </header>
 
