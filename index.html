@@ -12,8 +12,12 @@
     <div class="app">
         <header class="header">
             <h1 class="title">Vibe Factory</h1>
-            <button class="theme-toggle" id="theme-toggle">
-                <span class="icon"></span> Theme
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light mode">
+                <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <span id="themeText">Dark</span>
             </button>
         </header>
 
@@ -26,19 +30,7 @@
             </div>
         </main>
     </div>
-    <script>
-        const themeToggle = document.getElementById('theme-toggle');
-        const body = document.body;
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = body.getAttribute('data-theme');
-            if (currentTheme === 'light') {
-                body.removeAttribute('data-theme');
-            } else {
-                body.setAttribute('data-theme', 'light');
-            }
-        });
-    </script>
+    <script src="scripts/theme.js"></script>
 </body>
 
 </html>
