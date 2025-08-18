@@ -33,6 +33,16 @@
                     <div class="menu-card">
                         <h2 id="menu-title">Welcome to NeoPong</h2>
                         <p id="menu-sub" class="menu-sub">Enter your name and winning score, then press Start.</p>
+                        <div class="menu-gamemode">
+                            <div class="menu-radio">
+                                <input type="radio" id="vs-ai" name="gamemode" value="vs-ai" checked>
+                                <label for="vs-ai">Player vs. AI</label>
+                            </div>
+                            <div class="menu-radio">
+                                <input type="radio" id="vs-player" name="gamemode" value="vs-player">
+                                <label for="vs-player">Player vs. Player</label>
+                            </div>
+                        </div>
                         <label class="menu-label" for="playerName">Player name</label>
                         <input id="playerName" class="menu-input" type="text" placeholder="Player" maxlength="16" />
                         <div style="height:10px"></div>

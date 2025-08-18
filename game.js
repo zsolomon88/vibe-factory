@@ -48,6 +48,8 @@
   const goalFlashEl = document.getElementById("goalFlash");
   const countdownEl = document.getElementById("countdown");
   const countdownTextEl = document.getElementById("countdownText");
+  const gameModeSelector = document.querySelector('input[name="gamemode"]:checked');
+  const controlsHelp = document.querySelector(".menu-help ul");
 
   // Theme toggle elements
   const themeToggle = document.getElementById("themeToggle");
@@ -55,7 +57,7 @@
   const themeText = document.getElementById("themeText");
 
   // Input state
-  const keys = { w: false, s: false };
+  const keys = { w: false, s: false, up: false, down: false };
 
   function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
@@ -73,6 +75,7 @@
   let targetScore = 3;
   let isPlaying = false;
   let showBall = false;
+  let gameMode = "vs-ai";
 
   function showCountdown(done) {
     if (!countdownEl || !countdownTextEl) {
@@ -146,6 +149,10 @@
     if (menuSub)
       menuSub.textContent =
         "Enter your name and winning score, then press Start.";
+    gameMode = document.querySelector('input[name="gamemode"]:checked').value;
+    if (gameMode === "vs-player") {
+      aiLabel.textContent = "Player 2";
+    }
     startRound(Math.random() > 0.5 ? 1 : -1);
   }
 
@@ -159,10 +166,14 @@
     if (e.repeat) return;
     if (e.key === "w" || e.key === "W") keys.w = true;
     if (e.key === "s" || e.key === "S") keys.s = true;
+    if (e.key === "ArrowUp") keys.up = true;
+    if (e.key === "ArrowDown") keys.down = true;
   });
   window.addEventListener("keyup", (e) => {
     if (e.key === "w" || e.key === "W") keys.w = false;
     if (e.key === "s" || e.key === "S") keys.s = false;
+    if (e.key === "ArrowUp") keys.up = false;
+    if (e.key === "ArrowDown") keys.down = false;
   });
 
   startBtn.addEventListener("click", () => startGame());
@@ -174,6 +185,23 @@
       if (e.key === "Enter") startGame();
     });
   }
+
+  document.querySelectorAll('input[name="gamemode"]').forEach((elem) => {
+      elem.addEventListener("change", (event) => {
+          const mode = event.target.value;
+          if (mode === "vs-ai") {
+              controlsHelp.innerHTML = `
+                  <li>W: move up</li>
+                  <li>S: move down</li>
+              `;
+          } else {
+              controlsHelp.innerHTML = `
+                  <li>Player 1: W/S</li>
+                  <li>Player 2: Up/Down</li>
+              `;
+          }
+      });
+  });
 
   // AI logic: simple proportional controller toward ball y with reaction delay and max speed
   function updateAI() {
@@ -190,6 +218,13 @@
     if (keys.w) vy -= PADDLE_SPEED;
     if (keys.s) vy += PADDLE_SPEED;
     player.y = clamp(player.y + vy, 0, FIELD_SIZE - PADDLE_HEIGHT);
+  }
+
+  function updatePlayer2() {
+    let vy = 0;
+    if (keys.up) vy -= PADDLE_SPEED;
+    if (keys.down) vy += PADDLE_SPEED;
+    ai.y = clamp(ai.y + vy, 0, FIELD_SIZE - PADDLE_HEIGHT);
   }
 
   function rectsOverlap(ax, ay, aw, ah, bx, by, bw, bh) {
@@ -289,7 +324,7 @@
 
   function maybeEndRound() {
     if (playerScore >= targetScore || aiScore >= targetScore) {
-      const winner = playerScore >= targetScore ? playerName : "AI";
+      const winner = playerScore >= targetScore ? playerName : (gameMode === "vs-ai" ? "AI" : "Player 2");
       if (menuSub)
         menuSub.textContent = `${winner} wins! Enter details to play again.`;
       menu.style.display = "grid";
@@ -435,7 +470,11 @@
   function update() {
     if (isPlaying) {
       updatePlayer();
-      updateAI();
+      if (gameMode === "vs-ai") {
+        updateAI();
+      } else {
+        updatePlayer2();
+      }
       updateBall();
     }
     updateParticles();
