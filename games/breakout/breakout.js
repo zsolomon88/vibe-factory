@@ -67,6 +67,7 @@ let ball = {
 let bricks = [];
 let particles = []; // Array to hold particles
 let roundOver = false; // To pause game logic for animations
+const rowColors = ['#FF5733', '#FFC300', '#DAF7A6', '#33FF57', '#33C4FF'];
 
 function initGame() {
     resizeCanvas();
@@ -151,7 +152,6 @@ function drawBall() {
 }
 
 function drawBricks() {
-    const brickColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
     for (let c = 0; c < settings.brickColumnCount; c++) {
         for (let r = 0; r < settings.brickRowCount; r++) {
             if (bricks[c][r].status === 1) {
@@ -161,7 +161,7 @@ function drawBricks() {
                 bricks[c][r].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, settings.brickWidth, settings.brickHeight);
-                ctx.fillStyle = brickColor;
+                ctx.fillStyle = rowColors[r];
                 ctx.fill();
                 ctx.closePath();
             }
