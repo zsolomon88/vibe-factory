@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NeoPong</title>
     <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
     <div class="app">
         <header class="header">
             <h1 class="title">NeoPong</h1>
             <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light mode">
-                <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>
                 <span id="themeText">Dark</span>
@@ -46,23 +49,22 @@
                     </div>
                 </div>
             </div>
-        </main>
 
-        <footer class="scoreboard" aria-live="polite">
-            <div class="scoreboard-inner">
-                <span id="playerLabel">Player</span>
-                <span class="scores">
-                    <span id="playerScore">0</span>
-                    <span class="sep">|</span>
-                    <span id="aiScore">0</span>
-                </span>
-                <span id="aiLabel">AI</span>
+            <div class="scoreboard" aria-live="polite">
+                <div class="scoreboard-inner">
+                    <span id="playerLabel">Player</span>
+                    <span class="scores">
+                        <span id="playerScore">0</span>
+                        <span class="sep">|</span>
+                        <span id="aiScore">0</span>
+                    </span>
+                    <span id="aiLabel">AI</span>
+                </div>
             </div>
-        </footer>
+        </main>
     </div>
 
     <script src="game.js"></script>
 </body>
+
 </html>
-
-
