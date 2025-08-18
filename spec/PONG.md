@@ -25,12 +25,3 @@ Specifically it has the following features
 - Before the ball spawns at the start of the round and after each goal, display a centered countdown animation: "3... 2... 1... START!"
 - All game elements (paddles, ball, net, borders, particles, text) adapt to the selected theme for optimal readability
 
-### Non-game specific design
-
-- Dark and light mode toggle button in the header that allows users to switch between color schemes
-- Theme preference is saved in localStorage and restored on page reload
-
-## Implementation details
-
-- The game must be compatible with popular browsers including Google Chrome
-- You are free to use any free frameworks or programing languages to accomplish the task
