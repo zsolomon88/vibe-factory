@@ -12,6 +12,7 @@ class NeoAsteroids {
         this.score = 0;
         this.lives = 5;
         this.playerName = 'Space Pilot';
+        this.deathAnimationMode = false;
         
         // Game objects
         this.ship = null;
@@ -199,6 +200,17 @@ class NeoAsteroids {
     }
     
     update(deltaTime) {
+        // Always update particles (for death animation)
+        this.particles = this.particles.filter(particle => {
+            particle.update(deltaTime);
+            return particle.life > 0;
+        });
+        
+        // If in death animation mode, only update particles
+        if (this.deathAnimationMode) {
+            return;
+        }
+        
         // Update ship
         if (this.ship) {
             this.ship.update(deltaTime, this.keys, this.width, this.height);
@@ -218,12 +230,6 @@ class NeoAsteroids {
         this.lasers = this.lasers.filter(laser => {
             laser.update(deltaTime);
             return laser.isAlive(this.width, this.height);
-        });
-        
-        // Update particles
-        this.particles = this.particles.filter(particle => {
-            particle.update(deltaTime);
-            return particle.life > 0;
         });
         
         // Collision detection
@@ -338,15 +344,23 @@ class NeoAsteroids {
         this.lasers = [];
         
         if (this.lives > 0) {
-            // Respawn after countdown - longer delay to let destruction animation finish
-            this.gameRunning = false;
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Increased from 1000ms to 2000ms
+            // Enter death animation mode - game keeps running but only updates particles
+            this.deathAnimationMode = true;
+            
+            // Wait for death animation to complete (particles to fade)
+            await new Promise(resolve => setTimeout(resolve, 2500)); 
+            
+            // Exit death animation mode
+            this.deathAnimationMode = false;
+            
+            // Show countdown
             await this.showCountdown();
+            
+            // Respawn ship
             this.ship = new Ship(this.width / 2, this.height / 2);
             
             // Delay before spawning first asteroid
             this.asteroidSpawnTimer = -2000; // 2 second delay
-            this.gameRunning = true;
         }
     }
     
