@@ -195,8 +195,8 @@ class NeoAsteroids {
     
     // Calculate difficulty multiplier based on score
     getDifficultyMultiplier() {
-        // Start at 1.0x speed, increase by 2% per point, cap at 2.5x speed at 75 points
-        const maxMultiplier = 2.5;
+        // Start at 1.0x speed, increase by 2% per point, cap at 5.0x speed at 200 points
+        const maxMultiplier = 5.0;
         const pointsFor2x = 50; // Score of 50 = 2x speed
         const multiplier = 1 + (this.score / pointsFor2x);
         return Math.min(multiplier, maxMultiplier);
