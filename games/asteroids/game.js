@@ -156,7 +156,9 @@ class NeoAsteroids {
         const centerY = this.height / 2;
         const angle = Math.atan2(centerY - y, centerX - x) + (Math.random() - 0.5) * 0.5;
         
-        this.asteroids.push(new Asteroid(x, y, 'large', Math.cos(angle), Math.sin(angle)));
+        // Use proper speed for large asteroids (0.02)
+        const speed = 0.02;
+        this.asteroids.push(new Asteroid(x, y, 'large', Math.cos(angle) * speed, Math.sin(angle) * speed));
     }
     
     updateUI() {
@@ -277,7 +279,8 @@ class NeoAsteroids {
             
             for (let i = 0; i < 2; i++) {
                 const angle = Math.random() * Math.PI * 2;
-                const speed = 0.5 + Math.random() * 0.5;
+                // Use proper speed based on new size
+                const speed = newSize === 'medium' ? 0.025 : 0.03;
                 this.asteroids.push(new Asteroid(
                     asteroid.x,
                     asteroid.y,
