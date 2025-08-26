@@ -338,10 +338,8 @@ class NeoAsteroids {
     }
     
     render() {
-        // Clear canvas
-        this.ctx.fillStyle = getComputedStyle(document.documentElement)
-            .getPropertyValue('--canvas-bg') || '#0b111a';
-        this.ctx.fillRect(0, 0, this.width, this.height);
+        // Clear canvas with transparent background (let CSS handle the gradient)
+        this.ctx.clearRect(0, 0, this.width, this.height);
         
         // Get theme colors
         const textColor = getComputedStyle(document.documentElement)
