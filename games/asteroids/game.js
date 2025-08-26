@@ -174,9 +174,10 @@ class NeoAsteroids {
             selectedSize = 'large';
         }
         
-        // Use proper speed based on size
-        const speeds = { large: 0.02, medium: 0.025, small: 0.03 };
-        const speed = speeds[selectedSize];
+        // Use proper speed based on size, modified by difficulty
+        const baseSpeed = { large: 0.02, medium: 0.025, small: 0.03 }[selectedSize];
+        const difficultyMultiplier = this.getDifficultyMultiplier();
+        const speed = baseSpeed * difficultyMultiplier;
         
         this.asteroids.push(new Asteroid(x, y, selectedSize, Math.cos(angle) * speed, Math.sin(angle) * speed));
     }
@@ -185,6 +186,15 @@ class NeoAsteroids {
         document.getElementById('playerLabel').textContent = this.playerName;
         document.getElementById('score').textContent = this.score;
         document.getElementById('lives').textContent = this.lives;
+    }
+    
+    // Calculate difficulty multiplier based on score
+    getDifficultyMultiplier() {
+        // Start at 1.0x speed, increase by 2% per point, cap at 2.5x speed at 75 points
+        const maxMultiplier = 2.5;
+        const pointsFor2x = 50; // Score of 50 = 2x speed
+        const multiplier = 1 + (this.score / pointsFor2x);
+        return Math.min(multiplier, maxMultiplier);
     }
     
     gameLoop(currentTime = 0) {
@@ -304,8 +314,10 @@ class NeoAsteroids {
             
             for (let i = 0; i < 2; i++) {
                 const angle = Math.random() * Math.PI * 2;
-                // Use proper speed based on new size
-                const speed = newSize === 'medium' ? 0.025 : 0.03;
+                // Use proper speed based on new size, modified by difficulty
+                const baseSpeed = newSize === 'medium' ? 0.025 : 0.03;
+                const difficultyMultiplier = this.getDifficultyMultiplier();
+                const speed = baseSpeed * difficultyMultiplier;
                 this.asteroids.push(new Asteroid(
                     asteroid.x,
                     asteroid.y,
