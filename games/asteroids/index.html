@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NeoAsteroids</title>
+    <link rel="stylesheet" href="../../styles.css" />
+</head>
+
+<body>
+    <div class="app">
+        <header class="header">
+            <h1 class="title">NeoAsteroids</h1>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light mode">
+                <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <span id="themeText">Dark</span>
+            </button>
+        </header>
+
+        <main class="main">
+            <div class="stage-wrapper">
+                <canvas id="gameCanvas" width="720" height="720" aria-label="NeoAsteroids game area"></canvas>
+                <div id="countdownOverlay" class="countdown-overlay" aria-hidden="true">
+                    <div id="countdownText" class="countdown-text"></div>
+                </div>
+
+                <div id="menu" class="menu-overlay" role="dialog" aria-modal="true" aria-labelledby="menu-title">
+                    <div class="menu-card">
+                        <h2 id="menu-title">Welcome to NeoAsteroids</h2>
+                        <p id="menu-sub" class="menu-sub">Enter your name and destroy all the asteroids!</p>
+
+                        <label class="menu-label" for="playerName">Player name</label>
+                        <input id="playerName" class="menu-input" type="text" placeholder="Space Pilot"
+                            maxlength="16" />
+
+                        <button id="startBtn" class="menu-button" type="button">Start Game</button>
+                        <div class="menu-help">
+                            <p>Controls</p>
+                            <ul>
+                                <li>A/D: steer left/right</li>
+                                <li>W/S: move forward/backward</li>
+                                <li>Space: shoot laser</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scoreboard" aria-live="polite">
+                <div class="scoreboard-inner">
+                    <span id="playerLabel">Space Pilot</span>
+                    <span class="scores">
+                        <span>Score: <span id="score">0</span></span>
+                        <span class="sep">|</span>
+                        <span>Lives: <span id="lives">5</span></span>
+                        <span class="sep">|</span>
+                        <span>Speed: <span id="difficulty">100%</span></span>
+                    </span>
+                    <span id="gameStatus"></span>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <a href="../../index.html" class="menu-button">Back to Menu</a>
+        </footer>
+    </div>
+
+    <script src="game.js"></script>
+    <script src="../../scripts/theme.js"></script>
+</body>
+
+</html>

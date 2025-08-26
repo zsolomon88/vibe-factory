@@ -12,6 +12,7 @@ Specifically it has the following features
 
 - NeoPong (PONG.md)
 - NeoBreakout (BREAKOUT.md)
+- NeoAsteroids (ASTEROIDS.md)
 
 ### Non-game specific design
 

@@ -32,6 +32,23 @@ A classic brick-breaking game where the player controls a paddle to bounce a bal
 - **Controls**:
     - A/D to move the paddle left/right.
 
+#### NeoAsteroids
+A modern take on the classic Asteroids game where the player controls a triangular ship and destroys asteroids with lasers.
+
+- **Features**:
+    - Start menu to enter player name and begin the game.
+    - Progressive difficulty: asteroid speeds increase by 2% per point scored, capping at 500% speed.
+    - Three asteroid sizes (large, medium, small) with size-based breaking mechanics.
+    - Realistic thruster flame effects with particle trails when moving.
+    - Enhanced visual effects including explosion particles and death animations.
+    - Scoreboard showing Score, Lives, and current Speed percentage.
+    - Ship wrapping (exit one side, appear on opposite side).
+    - Countdown animation before game start and after respawn.
+- **Controls**:
+    - A/D to steer left/right.
+    - W/S to move forward/backward.
+    - Space to shoot lasers.
+
 ### File Structure
 - `index.html` – Main menu and game selector.
 - `styles.css` – Global layout, theme, and animations.
@@ -40,5 +57,7 @@ A classic brick-breaking game where the player controls a paddle to bounce a bal
 - `games/pong/game.js` – Game loop, physics, and AI for NeoPong.
 - `games/breakout/index.html` – Markup and UI for NeoBreakout.
 - `games/breakout/breakout.js` – Game loop and logic for NeoBreakout.
+- `games/asteroids/index.html` – Markup and UI for NeoAsteroids.
+- `games/asteroids/game.js` – Game loop, physics, and progressive difficulty for NeoAsteroids.
 
 
