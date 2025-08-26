@@ -120,10 +120,9 @@ class NeoAsteroids {
         this.asteroids = [];
         this.lasers = [];
         this.particles = [];
-        this.asteroidSpawnTimer = 0;
         
-        // Spawn initial asteroid
-        this.spawnAsteroid();
+        // Delay before spawning first asteroid (2 seconds)
+        this.asteroidSpawnTimer = -2000;
         
         this.updateUI();
     }
@@ -311,8 +310,10 @@ class NeoAsteroids {
         // Create explosion
         this.createExplosion(this.ship.x, this.ship.y, 'large');
         
-        // Remove ship temporarily
+        // Remove ship temporarily and clear all asteroids
         this.ship = null;
+        this.asteroids = [];
+        this.lasers = [];
         
         if (this.lives > 0) {
             // Respawn after countdown
@@ -320,6 +321,9 @@ class NeoAsteroids {
             await new Promise(resolve => setTimeout(resolve, 1000));
             await this.showCountdown();
             this.ship = new Ship(this.width / 2, this.height / 2);
+            
+            // Delay before spawning first asteroid
+            this.asteroidSpawnTimer = -2000; // 2 second delay
             this.gameRunning = true;
         }
     }
@@ -488,9 +492,9 @@ class Asteroid {
         
         // Size properties
         const sizes = {
-            large: { radius: 40, speed: 0.02 },
-            medium: { radius: 25, speed: 0.03 },
-            small: { radius: 15, speed: 0.04 }
+            large: { radius: 40, speed: 0.01 },
+            medium: { radius: 25, speed: 0.015 },
+            small: { radius: 15, speed: 0.02 }
         };
         
         this.radius = sizes[size].radius;
