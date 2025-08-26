@@ -488,11 +488,11 @@ class Asteroid {
         this.rotation = 0;
         this.rotationSpeed = (Math.random() - 0.5) * 0.002;
         
-        // Size properties (speeds are roughly 1/4 of ship max speed: 0.3)
+        // Size properties (speeds are much slower for relaxed gameplay)
         const sizes = {
-            large: { radius: 40, speed: 0.06 },
-            medium: { radius: 25, speed: 0.075 },
-            small: { radius: 15, speed: 0.09 }
+            large: { radius: 40, speed: 0.02 },
+            medium: { radius: 25, speed: 0.025 },
+            small: { radius: 15, speed: 0.03 }
         };
         
         this.radius = sizes[size].radius;
