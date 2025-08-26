@@ -29,6 +29,9 @@ class NeoAsteroids {
             a: false, d: false, w: false, s: false, space: false
         };
         
+        // Set global reference for ship to access particles
+        window.game = this;
+        
         this.setupEventListeners();
         this.updateUI();
         this.gameLoop();
@@ -425,6 +428,35 @@ class Ship {
         // Update trail
         this.trail.push({ x: this.x, y: this.y, time: Date.now() });
         this.trail = this.trail.filter(point => Date.now() - point.time < 300);
+        
+        // Generate thruster particles when moving
+        const isThrusting = Math.sqrt(this.velocity.x ** 2 + this.velocity.y ** 2) > 0.01;
+        if (isThrusting) {
+            // Generate 1-2 particles per frame when thrusting
+            const particleCount = Math.random() < 0.7 ? 1 : 2;
+            for (let i = 0; i < particleCount; i++) {
+                // Position particles at rear of ship
+                const rearX = this.x - Math.cos(this.angle) * 8;
+                const rearY = this.y - Math.sin(this.angle) * 8;
+                
+                // Add some spread to particle direction
+                const spread = 0.3;
+                const particleAngle = this.angle + Math.PI + (Math.random() - 0.5) * spread;
+                const particleSpeed = 0.02 + Math.random() * 0.03;
+                
+                // Create thruster particle
+                const thrusterParticle = new ThrusterParticle(
+                    rearX, rearY,
+                    Math.cos(particleAngle) * particleSpeed,
+                    Math.sin(particleAngle) * particleSpeed
+                );
+                
+                // Add to main particle array for rendering
+                if (window.game && window.game.particles) {
+                    window.game.particles.push(thrusterParticle);
+                }
+            }
+        }
     }
     
     canShoot() {
@@ -628,6 +660,42 @@ class Particle {
     render(ctx, accentColor) {
         ctx.globalAlpha = this.life;
         ctx.fillStyle = accentColor;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    }
+}
+
+// ThrusterParticle class for ship exhaust effects
+class ThrusterParticle {
+    constructor(x, y, velocityX, velocityY) {
+        this.x = x;
+        this.y = y;
+        this.velocity = { x: velocityX, y: velocityY };
+        this.life = 1;
+        this.decay = 0.004; // Faster decay than explosion particles
+        this.size = 1.5 + Math.random() * 2;
+        this.isThrusterParticle = true;
+    }
+    
+    update(deltaTime) {
+        this.x += this.velocity.x * deltaTime;
+        this.y += this.velocity.y * deltaTime;
+        this.life -= this.decay * deltaTime;
+        // Add some gravity/drag effect
+        this.velocity.x *= 0.995;
+        this.velocity.y *= 0.995;
+    }
+    
+    render(ctx, accentColor) {
+        ctx.globalAlpha = this.life * 0.7; // More subtle than explosion particles
+        
+        // Use orange/yellow colors for thruster exhaust
+        const orange = '#ff8c00';
+        const yellow = '#ffff00';
+        ctx.fillStyle = this.life > 0.5 ? orange : yellow;
+        
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
         ctx.fill();
