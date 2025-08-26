@@ -319,9 +319,9 @@ class NeoAsteroids {
         this.lasers = [];
         
         if (this.lives > 0) {
-            // Respawn after countdown
+            // Respawn after countdown - longer delay to let destruction animation finish
             this.gameRunning = false;
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Increased from 1000ms to 2000ms
             await this.showCountdown();
             this.ship = new Ship(this.width / 2, this.height / 2);
             
@@ -443,18 +443,41 @@ class Ship {
     }
     
     render(ctx, accentColor, textColor) {
-        // Render trail
-        ctx.strokeStyle = accentColor;
-        ctx.lineWidth = 2;
-        ctx.globalAlpha = 0.3;
+        // Render thruster trail (only when moving)
+        const isThrusting = Math.sqrt(this.velocity.x ** 2 + this.velocity.y ** 2) > 0.01;
         
-        if (this.trail.length > 1) {
+        if (isThrusting && this.trail.length > 1) {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.angle);
+            
+            // Create thruster flame effect
+            const thrusterLength = 20;
+            const thrusterWidth = 8;
+            
+            // Main thruster flame
+            ctx.fillStyle = accentColor;
+            ctx.globalAlpha = 0.6;
             ctx.beginPath();
-            ctx.moveTo(this.trail[0].x, this.trail[0].y);
-            for (let i = 1; i < this.trail.length; i++) {
-                ctx.lineTo(this.trail[i].x, this.trail[i].y);
-            }
-            ctx.stroke();
+            ctx.moveTo(-5, 0);
+            ctx.lineTo(-5 - thrusterLength, -thrusterWidth/2);
+            ctx.lineTo(-5 - thrusterLength * 0.8, 0);
+            ctx.lineTo(-5 - thrusterLength, thrusterWidth/2);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Inner flame
+            ctx.fillStyle = textColor;
+            ctx.globalAlpha = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(-5, 0);
+            ctx.lineTo(-5 - thrusterLength * 0.6, -thrusterWidth/4);
+            ctx.lineTo(-5 - thrusterLength * 0.5, 0);
+            ctx.lineTo(-5 - thrusterLength * 0.6, thrusterWidth/4);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.restore();
         }
         
         ctx.globalAlpha = 1;
