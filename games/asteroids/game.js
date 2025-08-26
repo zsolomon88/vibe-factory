@@ -186,6 +186,11 @@ class NeoAsteroids {
         document.getElementById('playerLabel').textContent = this.playerName;
         document.getElementById('score').textContent = this.score;
         document.getElementById('lives').textContent = this.lives;
+        
+        // Update difficulty indicator
+        const difficultyMultiplier = this.getDifficultyMultiplier();
+        const difficultyText = `${(difficultyMultiplier * 100).toFixed(0)}%`;
+        document.getElementById('difficulty').textContent = difficultyText;
     }
     
     // Calculate difficulty multiplier based on score
