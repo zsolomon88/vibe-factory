@@ -122,8 +122,7 @@ class NeoAsteroids {
         this.particles = [];
         this.asteroidSpawnTimer = 0;
         
-        // Spawn initial asteroids
-        this.spawnAsteroid();
+        // Spawn initial asteroid
         this.spawnAsteroid();
         
         this.updateUI();
@@ -489,9 +488,9 @@ class Asteroid {
         
         // Size properties
         const sizes = {
-            large: { radius: 40, speed: 0.05 },
-            medium: { radius: 25, speed: 0.08 },
-            small: { radius: 15, speed: 0.12 }
+            large: { radius: 40, speed: 0.02 },
+            medium: { radius: 25, speed: 0.03 },
+            small: { radius: 15, speed: 0.04 }
         };
         
         this.radius = sizes[size].radius;
